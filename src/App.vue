@@ -3,7 +3,6 @@
     <LeftSidebar />
     <RightSidebar />
     <v-app-bar flat border density="compact">
-      <!-- <v-app-bar-nav-icon @click="controlsStore.toggleDrawer"></v-app-bar-nav-icon> -->
       <v-toolbar-title>P2P File Share</v-toolbar-title>
       <v-spacer></v-spacer>
       <v-btn icon @click="controlsStore.toggleLeftDrawer"><v-icon>mdi-account-group</v-icon></v-btn>
@@ -15,27 +14,7 @@
     </v-app-bar>
 
     <v-main>
-      <v-list density="compact" style="height: 100%">
-        <TaskBar for="n in 10" :key="n" />
-      </v-list>
-      <v-bottom-navigation mode="shift" grow>
-      <v-btn>
-        <v-icon>mdi-television-play</v-icon>
-        <span>Video</span>
-      </v-btn>
-      <v-btn>
-        <v-icon>mdi-music-note</v-icon>
-        <span>Music</span>
-      </v-btn>
-      <v-btn>
-        <v-icon>mdi-book</v-icon>
-        <span>Book</span>
-      </v-btn>
-      <v-btn>
-        <v-icon>mdi-image</v-icon>
-        <span>Image</span>
-      </v-btn>
-    </v-bottom-navigation>
+      <Tabs />
     </v-main>
   </v-app>
 </template>
@@ -44,6 +23,7 @@
 import LeftSidebar from './components/LeftSidebar.vue'
 import RightSidebar from './components/RightSidebar.vue'
 import TaskBar from './components/TaskBar.vue'
+import Tabs from './components/Tabs.vue'
 import useControlsStore from './store/ui-controls'
 
 const controlsStore = useControlsStore()
