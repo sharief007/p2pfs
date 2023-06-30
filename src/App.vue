@@ -22,7 +22,6 @@
 <script setup>
 import LeftSidebar from './components/LeftSidebar.vue'
 import RightSidebar from './components/RightSidebar.vue'
-import TaskBar from './components/TaskBar.vue'
 import Tabs from './components/Tabs.vue'
 import useControlsStore from './store/ui-controls'
 

@@ -9,11 +9,13 @@
     </v-tabs>
     <v-window v-model="tab" style="height: calc(100vh - 6rem)" class="overflow-y-auto">
       <v-window-item value="progress">
-        <v-list density="compact">
-          <div v-for="i in taskList" :key="i">
-            <TaskBar />
-          </div>
-        </v-list>
+        <v-container>
+          <v-row v-for="i in (taskList.length/(12 / colCount))" :key="i">
+            <v-col v-for="j in colCount" :key="i" :col="(12 / colCount)">
+              <Task />
+            </v-col>
+          </v-row>
+        </v-container>
       </v-window-item>
       <v-window-item value="completed"> </v-window-item>
       <v-window-item value="failed"> </v-window-item>
@@ -36,18 +38,59 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import { useDisplay } from 'vuetify/lib/framework.mjs'
 
-import TaskBar from './TaskBar.vue'
+import Task from './Task.vue'
 import { onMounted } from 'vue'
 
 const tab = ref('progress')
 const taskList = ref([])
-const { sm, smAndUp, smAndDown } = useDisplay()
+const display = useDisplay()
+
+
+const isMobile = () => {
+  let { xs, xsAndDown } = display
+  return (xsAndDown || xs || xsAndUp)
+}
+
+const isTablet = () => {
+  let { xsAndUp, smAndDown, sm, smAndUp } = display
+  return (xsAndUp || smAndDown || sm || smAndUp)
+}
+
+const isLaptop = () => {
+  let { mdAndDown, md, mdAndUp } = display
+  return ( mdAndDown || md || mdAndUp)
+}
+
+const isDesktop = () => {
+  let { lgAndDown, lg, lgAndUp } = display
+  return ( lgAndDown || lg || lgAndUp)
+}
+
+const isExtraLarge = () => {
+  let { xlAndDown, xl, xlAndUp } = display
+  return ( xlAndDown || xl || xlAndUp)
+}
+
+const colCount = computed(() => {
+    if (isMobile()) {
+      return 1
+    } else if(isTablet()) {
+      return 2
+    } else if(isLaptop()) {
+      return 3
+    } else if(isDesktop()) {
+      return 4
+    } else {
+      return 6
+    }
+})
+
 
 onMounted(() => {
-  for (let i = 0; i < 25; i++) {
+  for (let i = 0; i < 10; i++) {
     taskList.value.push(i)
   }
 })
