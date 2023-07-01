@@ -13,7 +13,7 @@
 
 <script setup>
 import Groups from './Groups.vue'
-import QRMatrix from './QRMatrix.vue';
+import QRMatrix from './QRMatrix.vue'
 
 import useControlsStore from '../store/ui-controls'
 

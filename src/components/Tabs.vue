@@ -10,8 +10,8 @@
     <v-window v-model="tab" style="height: calc(100vh - 6rem)" class="overflow-y-auto">
       <v-window-item value="progress">
         <v-container>
-          <v-row v-for="i in (taskList.length/(12 / colCount))" :key="i">
-            <v-col v-for="j in colCount" :key="i" :col="(12 / colCount)">
+          <v-row v-for="i in rowCount" :key="i">
+            <v-col v-for="j in colCount" :key="j" :col="12 / colCount">
               <Task />
             </v-col>
           </v-row>
@@ -38,56 +38,41 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue'
-import { useDisplay } from 'vuetify/lib/framework.mjs'
+import { ref, reactive, computed } from 'vue'
+import { useDisplay } from 'vuetify'
 
 import Task from './Task.vue'
 import { onMounted } from 'vue'
+import useControlsStore from '../store/ui-controls'
 
 const tab = ref('progress')
 const taskList = ref([])
-const display = useDisplay()
-
-
-const isMobile = () => {
-  let { xs, xsAndDown } = display
-  return (xsAndDown || xs || xsAndUp)
-}
-
-const isTablet = () => {
-  let { xsAndUp, smAndDown, sm, smAndUp } = display
-  return (xsAndUp || smAndDown || sm || smAndUp)
-}
-
-const isLaptop = () => {
-  let { mdAndDown, md, mdAndUp } = display
-  return ( mdAndDown || md || mdAndUp)
-}
-
-const isDesktop = () => {
-  let { lgAndDown, lg, lgAndUp } = display
-  return ( lgAndDown || lg || lgAndUp)
-}
-
-const isExtraLarge = () => {
-  let { xlAndDown, xl, xlAndUp } = display
-  return ( xlAndDown || xl || xlAndUp)
-}
+const { smAndDown, sm, smAndUp, name } = useDisplay()
+const controlsStore = useControlsStore()
 
 const colCount = computed(() => {
-    if (isMobile()) {
+  switch (name.value) {
+    case 'xs':
       return 1
-    } else if(isTablet()) {
+    case 'sm':
       return 2
-    } else if(isLaptop()) {
-      return 3
-    } else if(isDesktop()) {
-      return 4
-    } else {
-      return 6
+    case 'md':
+      return 2
+    case 'lg': {
+      return controlsStore.rightDrawer || controlsStore.rightDrawer ? 2 : 3
     }
+    case 'xl':
+      return 3
+    case 'xxl':
+      return 4
+    default:
+      return 6
+  }
 })
 
+const rowCount = computed(() => {
+  return Math.round(taskList.value.length / colCount.value)
+})
 
 onMounted(() => {
   for (let i = 0; i < 10; i++) {
