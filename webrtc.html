@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    
+</body>
+<script>
+    let connection = null
+    let datachan = null
+    let list = []
+    let acceptOffer = null
+    let acceptAnswer = null
+
+    async function sender() {
+        connection = new RTCPeerConnection()
+        datachan = await connection.createDataChannel("data-chan-01")
+
+        connection.onicecandidate = async (e)=> {
+            let ice = JSON.stringify(connection.localDescription)
+            console.log(`New Ice Candidate`, ice);
+            list.push(ice)
+        }
+
+        datachan.onopen = async (e) => {
+            console.log(`Data channel opened`, JSON.stringify(e));
+        }
+
+        datachan.onmessage = async (e) => {
+            console.log(`Received new Message`, JSON.stringify(e));
+        }
+
+        offer = await connection.createOffer()
+        console.log(`Offer Created`);
+        list.push(JSON.stringify(offer))
+        connection.setLocalDescription(offer)
+
+        acceptAnswer = async (answer) => {
+            await connection.setRemoteDescription(answer)
+        }
+    }
+
+    async function receiver() {
+        connection = new RTCPeerConnection()
+        connection.onicecandidate = async (e)=> {
+            let ice = JSON.stringify(connection.localDescription)
+            console.log(`New Ice Candidate`, ice);
+            list.push(ice)
+        }
+
+        connection.ondatachannel = async (e) => {
+            datachan = e.channel
+            datachan.onopen = async (e) => {
+                console.log(`Data channel opened`, JSON.stringify(e));
+            }
+
+            datachan.onmessage = async (e) => {
+                console.log(`Received new Message`, JSON.stringify(e));
+            }
+        }
+
+        acceptOffer = async (offer) => {
+            await connection.setRemoteDescription(offer)
+            let answer = await connection.createAnswer()
+            connection.setLocalDescription(answer)
+            console.log(`answer created`, JSON.stringify(answer));
+        }
+    }
+
+</script>
+</html>

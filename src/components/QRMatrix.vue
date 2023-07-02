@@ -4,29 +4,28 @@
 
 <script setup>
 import QRCode from 'qrcode-svg'
-import { onMounted, ref } from 'vue'
+import { onMounted, ref, computed } from 'vue'
 
+const localConnection = new RTCPeerConnection()
 const qrCodeDataUrl = ref('')
-onMounted(() => {
-  const qrcode = new QRCode({
-    content: 'Hello World'
-  })
+
+const generateQRCode = (content) => {
+  const qrcode = new QRCode({content})
   const svgImg = qrcode.svg()
-  qrCodeDataUrl.value = 'data:image/svg+xml;base64,' + btoa(svgImg)
 
-  if ('BarcodeDetector' in window) {
-    const qrCodeDetector = new BarcodeDetector({
-      formats: ['qr_code']
-    })
+  return 'data:image/svg+xml;base64,' + btoa(svgImg)
+}
 
-    qrCodeDetector
-      .detect(qrCodeDataUrl)
-      .then((codes) => {
-        console.log(codes)
-      })
-      .catch(console.error)
-  } else {
-    console.log('BarCode detector not supported')
+onMounted(async () => {
+  localConnection.onicecandidate = (e) => {
+    let ice = JSON.stringify(localConnection.localDescription)
+    qrCodeDataUrl.value = generateQRCode(ice)
+    console.log(ice);
   }
+  const offer = await localConnection.createOffer()
+  let offerStr = JSON.stringify(offer)
+  console.log(`offer created`, offerStr);
+  qrCodeDataUrl.value = generateQRCode(offerStr)
+  localConnection.setLocalDescription(offer);
 })
 </script>
