@@ -3,7 +3,8 @@ import { defineStore } from 'pinia'
 const useControlsStore = defineStore('controls', {
   state: () => ({
     leftDrawer: true,
-    rightDrawer: true
+    rightDrawer: true,
+    qrReader: false
   }),
   getters: {},
   actions: {
@@ -13,6 +14,12 @@ const useControlsStore = defineStore('controls', {
     },
     toggleRightDrawer() {
       this.rightDrawer = !this.rightDrawer
+    },
+    showQRReader() {
+      this.qrReader = true
+    },
+    hideQRReader() {
+      this.qrReader = false
     }
   }
 })

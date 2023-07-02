@@ -5,27 +5,23 @@
 <script setup>
 import QRCode from 'qrcode-svg'
 import { onMounted, ref, computed } from 'vue'
+import usertcStore from '../store/webrtc'
 
-const localConnection = new RTCPeerConnection()
-const qrCodeDataUrl = ref('')
+const rtcStore = usertcStore()
 
 const generateQRCode = (content) => {
+  
   const qrcode = new QRCode({content})
   const svgImg = qrcode.svg()
-
+  console.log(`generate qr triggered with`, content);
   return 'data:image/svg+xml;base64,' + btoa(svgImg)
 }
 
+const qrCodeDataUrl = computed(()=> {
+  return generateQRCode(rtcStore.sdp)
+})
+
 onMounted(async () => {
-  localConnection.onicecandidate = (e) => {
-    let ice = JSON.stringify(localConnection.localDescription)
-    qrCodeDataUrl.value = generateQRCode(ice)
-    console.log(ice);
-  }
-  const offer = await localConnection.createOffer()
-  let offerStr = JSON.stringify(offer)
-  console.log(`offer created`, offerStr);
-  qrCodeDataUrl.value = generateQRCode(offerStr)
-  localConnection.setLocalDescription(offer);
+  await rtcStore.init()
 })
 </script>

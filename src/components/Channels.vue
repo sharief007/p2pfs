@@ -10,10 +10,14 @@
       hide-details
       prepend-inner-icon="mdi-magnify"
     ></v-text-field>
-    <v-btn icon>
+    <v-btn icon @click="rtcStore.createOffer">
       <v-icon>mdi-plus</v-icon>
     </v-btn>
   </v-toolbar>
 </template>
 
-<script setup></script>
+<script setup>
+import usertcStore from '../store/webrtc'
+
+const rtcStore = usertcStore()
+</script>

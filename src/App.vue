@@ -9,7 +9,7 @@
       <v-btn icon @click="controlsStore.toggleRightDrawer"
         ><v-icon>mdi-shield-refresh</v-icon></v-btn
       >
-      <v-btn icon><v-icon>mdi-data-matrix-scan</v-icon></v-btn>
+      <QRReader />
       <v-btn icon><v-icon>mdi-file-send</v-icon></v-btn>
     </v-app-bar>
 
@@ -23,6 +23,8 @@
 import LeftSidebar from './components/LeftSidebar.vue'
 import RightSidebar from './components/RightSidebar.vue'
 import Tabs from './components/Tabs.vue'
+import QRReader from './components/QRReader.vue'
+
 import useControlsStore from './store/ui-controls'
 
 const controlsStore = useControlsStore()
