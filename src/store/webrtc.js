@@ -12,6 +12,8 @@ const usertcStore = defineStore('webrtc', {
             console.log(`Offer Created`);
             await this.connection.setLocalDescription(offer)
             this.sdp = JSON.stringify(this.connection.localDescription)
+            
+            this.createDataChan('data-channel-01')
         },
         async acceptAnswer(answer) {
             answer = JSON.parse(answer)
@@ -19,7 +21,13 @@ const usertcStore = defineStore('webrtc', {
             console.log(`remote description set.`);
         },
         init() {
-            this.connection = new RTCPeerConnection()
+            this.connection = new RTCPeerConnection({
+                configuration: {
+                  offerToReceiveAudio: true,
+                  offerToReceiveVideo: true
+                },
+                iceServers: [{ urls: 'stun:stun.l.google.com:19302' }]
+              })
             this.connection.onicecandidate = async (e)=> {
                 this.sdp = JSON.stringify(this.connection.localDescription)
                 console.log(`New Ice Candidate`, this.sdp);
@@ -36,8 +44,8 @@ const usertcStore = defineStore('webrtc', {
                 }
             }
         },
-        async createDataChan() {
-            this.datachan = await connection.createDataChannel("data-chan-01")
+        async createDataChan(label) {
+            this.datachan = await this.connection.createDataChannel(label)
             this.datachan.onopen = async (e) => {
                 console.log(`Data channel opened`, JSON.stringify(e));
             }
@@ -51,9 +59,9 @@ const usertcStore = defineStore('webrtc', {
             await this.connection.setRemoteDescription(offer)
             let answer = await this.connection.createAnswer()
             await this.connection.setLocalDescription(answer)
+            this.sdp = JSON.stringify(this.connection.localDescription)
             console.log(`answer created`, JSON.stringify(this.connection.localDescription));
         }
     }
 })
-
 export default usertcStore

@@ -15,8 +15,11 @@
         <v-icon>mdi-plus</v-icon>
       </v-btn>
     </v-toolbar>
-    <v-container style="height: 100%"> No active Channels </v-container>
+    <v-container style="height: 100%"> {{ rtcStore.sdp }} </v-container>
   </div>
 </template>
 
-<script setup></script>
+<script setup>
+import usertcStore from '../store/webrtc'
+const rtcStore = usertcStore()
+</script>

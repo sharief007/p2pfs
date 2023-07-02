@@ -21,7 +21,4 @@ const qrCodeDataUrl = computed(()=> {
   return generateQRCode(rtcStore.sdp)
 })
 
-onMounted(async () => {
-  await rtcStore.init()
-})
 </script>

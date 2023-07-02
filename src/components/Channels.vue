@@ -14,6 +14,7 @@
       <v-icon>mdi-plus</v-icon>
     </v-btn>
   </v-toolbar>
+  <v-container style="height: 100%"> {{ rtcStore.sdp }} </v-container>
 </template>
 
 <script setup>
