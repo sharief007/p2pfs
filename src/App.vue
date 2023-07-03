@@ -10,7 +10,7 @@
         ><v-icon>mdi-shield-refresh</v-icon></v-btn
       >
       <QRReader />
-      <v-btn icon @click="rtcStore.init"><v-icon>mdi-file-send</v-icon></v-btn>
+      <v-btn icon><v-icon>mdi-file-send</v-icon></v-btn>
     </v-app-bar>
 
     <v-main>
@@ -27,7 +27,10 @@ import QRReader from './components/QRReader.vue'
 
 import useControlsStore from './store/ui-controls'
 import usertcStore from './store/webrtc'
+import {onMounted} from "vue";
 
 const controlsStore = useControlsStore()
 const rtcStore = usertcStore()
+
+onMounted(rtcStore.init)
 </script>
