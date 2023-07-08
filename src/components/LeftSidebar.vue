@@ -1,8 +1,8 @@
 <template>
   <v-navigation-drawer app v-model="controlsStore.leftDrawer">
-    <div class="d-flex flex-column" style="height: 100%" fluid>
+    <div class="d-flex flex-column h-100">
       <div>
-        <KeyPair />
+        <QRMatrix />
       </div>
       <div class="flex-grow-1 overflow-y-auto">
         <Channels />
@@ -12,10 +12,10 @@
 </template>
 
 <script setup>
-import KeyPair from './KeyPair.vue';
-import Channels from './Channels.vue'
+import Channels from './ChannelList.vue'
 
-import useControlsStore from '../store/ui-controls'
+import UseControlsStore from '../store/controlsStore'
+import QRMatrix from "./QRMatrix.vue";
 
-const controlsStore = useControlsStore()
+const controlsStore = UseControlsStore()
 </script>

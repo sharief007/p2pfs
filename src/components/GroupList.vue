@@ -1,8 +1,8 @@
 <template>
   <div>
-    <v-toolbar flat density="compact">
+    <v-toolbar :flat="true" density="compact">
       <v-text-field
-        flat
+        :flat="true"
         class="mx-2"
         density="compact"
         variant="solo"
@@ -20,6 +20,6 @@
 </template>
 
 <script setup>
-import usertcStore from '../store/webrtc'
-const rtcStore = usertcStore()
+import UseWebRTCStore from '../store/webrtcStore'
+const rtcStore = UseWebRTCStore()
 </script>

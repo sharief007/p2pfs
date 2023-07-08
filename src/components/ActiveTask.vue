@@ -4,7 +4,7 @@
       height="65"
       color="grey-lighten-3"
       :model-value="progress"
-      striped
+      :striped="true"
       buffer-value="10"
     >
       <v-card-item style="width: 100%">
@@ -25,13 +25,13 @@
       <template v-slot:append>
         <v-btn
           variant="text"
-          flat
+          :flat="true"
           size="small"
           @click="console.log('I am here, MF!')"
           prepend-icon="mdi-play"
           >play</v-btn
         >
-        <v-btn variant="text" flat size="small" prepend-icon="mdi-trash-can">delete</v-btn>
+        <v-btn variant="text" :flat="true" size="small" prepend-icon="mdi-trash-can">delete</v-btn>
       </template>
     </v-list-item>
   </v-card>

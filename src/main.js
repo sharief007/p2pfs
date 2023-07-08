@@ -22,6 +22,7 @@ const vuetify = createVuetify({
 
 app.use(pinia)
 app.use(vuetify)
-app.use(router)
+// app.use(router)
 
 app.mount('#app')
+console.log(import.meta.url)

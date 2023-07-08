@@ -1,15 +1,16 @@
 import { defineStore } from 'pinia'
 
-const useControlsStore = defineStore('controls', {
+const UseControlsStore = defineStore('controls', {
   state: () => ({
     leftDrawer: true,
     rightDrawer: true,
-    qrReader: false
+    qrReader: false,
+    createChannel : false,
+    selectedChannel: 0
   }),
   getters: {},
   actions: {
     toggleLeftDrawer() {
-      console.log('Fuck you')
       this.leftDrawer = !this.leftDrawer
     },
     toggleRightDrawer() {
@@ -20,8 +21,17 @@ const useControlsStore = defineStore('controls', {
     },
     hideQRReader() {
       this.qrReader = false
+    },
+    showCreateChannel() {
+      this.createChannel = true
+    },
+    hideCreateChannel() {
+      this.createChannel = false
+    },
+    setSelectedChannel(name) {
+      this.selectedChannel = name
     }
   }
 })
 
-export default useControlsStore
+export default UseControlsStore

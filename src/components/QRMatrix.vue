@@ -1,24 +1,23 @@
 <template>
-  <v-img :src="qrCodeDataUrl" />
+    <v-img :src="qrCodeDataUrl" v-if="connectionsAvailable"/>
 </template>
 
 <script setup>
-import QRCode from 'qrcode-svg'
-import { onMounted, ref, computed } from 'vue'
-import usertcStore from '../store/webrtc'
+import { computed } from 'vue'
 
-const rtcStore = usertcStore()
+import UseControlsStore from "../store/controlsStore";
+import UseWebRTCStore from '../store/webrtcStore'
 
-const generateQRCode = (content) => {
-  
-  const qrcode = new QRCode({content})
-  const svgImg = qrcode.svg()
-  console.log(`generate qr triggered with`, content);
-  return 'data:image/svg+xml;base64,' + btoa(svgImg)
-}
+// const controlStore = UseControlsStore()
+const webrtcStore = UseWebRTCStore()
+const controlsStore = UseControlsStore()
+
+const connectionsAvailable = computed(()=> {
+  return Object.keys(webrtcStore.connectionsMap).length > 0
+})
 
 const qrCodeDataUrl = computed(()=> {
-  return generateQRCode(rtcStore.sdp)
+  return webrtcStore.getQRCode(controlsStore.selectedChannel)
 })
 
 </script>

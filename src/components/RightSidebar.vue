@@ -1,8 +1,8 @@
 <template>
   <v-navigation-drawer app location="right" v-model="controlsStore.rightDrawer">
-    <div class="d-flex flex-column" style="height: 100%" fluid>
+    <div class="d-flex flex-column" style="height: 100%">
       <div>
-        <QRMatrix />
+<!--        <QRMatrix />-->
       </div>
       <div class="flex-grow-1">
         <Groups />
@@ -12,10 +12,9 @@
 </template>
 
 <script setup>
-import Groups from './Groups.vue'
-import QRMatrix from './QRMatrix.vue'
+import Groups from './GroupList.vue'
 
-import useControlsStore from '../store/ui-controls'
+import UseControlsStore from '../store/controlsStore'
 
-const controlsStore = useControlsStore()
+const controlsStore = UseControlsStore()
 </script>

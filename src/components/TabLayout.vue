@@ -20,7 +20,7 @@
       <v-window-item value="completed"> </v-window-item>
       <v-window-item value="failed"> </v-window-item>
     </v-window>
-    <v-bottom-navigation grow mandatory v-if="smAndDown" v-model:model-value="tab">
+    <v-bottom-navigation :grow="true" mandatory v-if="smAndDown" v-model:model-value="tab">
       <v-btn value="progress">
         <v-icon>mdi-progress-clock</v-icon>
         <span>Queued</span>
@@ -38,17 +38,17 @@
 </template>
 
 <script setup>
-import { ref, reactive, computed } from 'vue'
+import { ref, computed } from 'vue'
 import { useDisplay } from 'vuetify'
 
-import Task from './Task.vue'
+import Task from './ActiveTask.vue'
 import { onMounted } from 'vue'
-import useControlsStore from '../store/ui-controls'
+import UseControlsStore from '../store/controlsStore'
 
 const tab = ref('progress')
 const taskList = ref([])
 const { smAndDown, sm, smAndUp, name } = useDisplay()
-const controlsStore = useControlsStore()
+const controlsStore = UseControlsStore()
 
 const colCount = computed(() => {
   switch (name.value) {

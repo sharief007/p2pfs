@@ -5,7 +5,7 @@
         </template>
         <v-card>
             <v-card-text class="pa-0">
-                <v-textarea flat autofocus hide-details variant="solo" :placeholder="placeholder" v-model="sdp"></v-textarea>
+                <v-textarea :flat="true" :autofocus="true" hide-details variant="solo" :placeholder="placeholder" v-model="sdp"></v-textarea>
             </v-card-text>
             <v-card-actions>
                 <v-spacer></v-spacer>
@@ -17,12 +17,12 @@
 </template>
 
 <script setup>
-import useControlsStore from '../store/ui-controls'
-import usertcStore from '../store/webrtc'
+import UseControlsStore from '../store/controlsStore'
+import UseWebRTCStore from '../store/webrtcStore'
 
 import { ref } from 'vue';
-const controlsStore = useControlsStore()
-const rtcStore = usertcStore()
+const controlsStore = UseControlsStore()
+const rtcStore = UseWebRTCStore()
 
 const placeholder = ref('paste your sdp protocol information here')
 const sdp = ref('')
