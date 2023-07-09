@@ -15,7 +15,7 @@
 import Channels from './ChannelList.vue'
 
 import UseControlsStore from '../store/controlsStore'
-import QRMatrix from "./QRMatrix.vue";
+import QRMatrix from './QRMatrix.vue'
 
 const controlsStore = UseControlsStore()
 </script>

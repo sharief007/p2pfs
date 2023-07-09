@@ -1,7 +1,7 @@
 <template>
   <v-app id="inspire">
     <LeftSidebar />
-<!--    <RightSidebar />-->
+    <!--    <RightSidebar />-->
     <v-app-bar :flat="true" border density="compact">
       <v-toolbar-title>P2PFS</v-toolbar-title>
       <v-spacer></v-spacer>
@@ -29,5 +29,4 @@ import QRReader from './components/QRReader.vue'
 import UseControlsStore from './store/controlsStore'
 
 const controlsStore = UseControlsStore()
-
 </script>

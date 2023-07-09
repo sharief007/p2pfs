@@ -2,11 +2,12 @@ import { defineStore } from 'pinia'
 
 const UseControlsStore = defineStore('controls', {
   state: () => ({
-    leftDrawer: true,
+    leftDrawer: null,
     rightDrawer: true,
     qrReader: false,
-    createChannel : false,
-    selectedChannel: 0
+    createChannel: false,
+    channelNameReadOnly: false,
+    selectedChannel: null
   }),
   getters: {},
   actions: {

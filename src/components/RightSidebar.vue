@@ -2,7 +2,7 @@
   <v-navigation-drawer app location="right" v-model="controlsStore.rightDrawer">
     <div class="d-flex flex-column" style="height: 100%">
       <div>
-<!--        <QRMatrix />-->
+        <!--        <QRMatrix />-->
       </div>
       <div class="flex-grow-1">
         <Groups />
