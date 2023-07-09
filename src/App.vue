@@ -11,7 +11,7 @@
       <v-btn icon @click="controlsStore.toggleRightDrawer">
         <v-icon>mdi-shield-refresh</v-icon>
       </v-btn>
-      <QRReader />
+      <SDPReader />
       <v-btn icon><v-icon>mdi-file-send</v-icon></v-btn>
     </v-app-bar>
     <v-main>
@@ -22,11 +22,10 @@
 
 <script setup>
 import LeftSidebar from './components/LeftSidebar.vue'
-// import RightSidebar from './components/RightSidebar.vue'
 import Tabs from './components/TabLayout.vue'
-import QRReader from './components/QRReader.vue'
 
 import UseControlsStore from './store/controlsStore'
+import SDPReader from './components/SDPReader.vue';
 
 const controlsStore = UseControlsStore()
 </script>

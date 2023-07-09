@@ -4,10 +4,11 @@ const UseControlsStore = defineStore('controls', {
   state: () => ({
     leftDrawer: null,
     rightDrawer: true,
-    qrReader: false,
+    sdpReader: false,
     createChannel: false,
     channelNameReadOnly: false,
-    selectedChannel: null
+    selectedChannel: null,
+    qrCodeModal: null
   }),
   getters: {},
   actions: {
@@ -17,13 +18,14 @@ const UseControlsStore = defineStore('controls', {
     toggleRightDrawer() {
       this.rightDrawer = !this.rightDrawer
     },
-    showQRReader() {
-      this.qrReader = true
+    showSDPReader() {
+      this.sdpReader = true
     },
-    hideQRReader() {
-      this.qrReader = false
+    hideSDPReader() {
+      this.sdpReader = false
     },
     showCreateChannel() {
+      console.log("I am here Bitch")
       this.createChannel = true
     },
     hideCreateChannel() {
@@ -31,6 +33,9 @@ const UseControlsStore = defineStore('controls', {
     },
     setSelectedChannel(name) {
       this.selectedChannel = name
+    },
+    showQRCodeModal() {
+      this.qrCodeModal = true
     }
   }
 })

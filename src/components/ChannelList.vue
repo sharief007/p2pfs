@@ -13,7 +13,8 @@
       ></v-text-field>
       <CreateChannel />
     </v-toolbar>
-    <v-list v-model:selected="controlsStore.selectedChannel" :nav="true" :mandatory="true">
+    <v-list v-model:selected="controlsStore.selectedChannel" 
+            :nav="true" :mandatory="true" class="flex-grow-1 overflow-y-auto">
       <v-list-item
         v-for="(value, key) in webrtcStore.connectionsMetaData"
         density="compact"
