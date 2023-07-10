@@ -1,28 +1,34 @@
 <template>
-  <v-dialog v-model="controlsStore.sdpReader" width="auto" :persistent="true">
+  <v-dialog v-model="controlsStore.sdpReader" width="400" height="500" :scrollable="true" :persistent="true">
     <template v-slot:activator>
       <v-btn icon @click="controlsStore.showSDPReader"><v-icon>mdi-data-matrix-scan</v-icon></v-btn>
     </template>
     <v-card title="Accept offer/answer">
-        <v-window v-model:model-value="steps">
-          <v-window-item value="step-1">
-            <v-list v-model:selected="controlsStore.selectedChannel"
-                    :nav="true" :mandatory="true" class="flex-grow-1 overflow-y-auto">
-              <v-list-subheader title="Select SDP type"></v-list-subheader>
-                <v-radio-group density="compact" v-model:model-value="inputType">
-                <v-radio label="offer" value="offer"></v-radio>
-                <v-radio label="answer" value="answer"></v-radio>
-              </v-radio-group>
-              <v-list-subheader title="Select the channel"></v-list-subheader>
-                <v-list-item v-for="(value, key) in webrtcStore.connectionsMetaData"
-                      density="compact" :value="key" :title="key">
-                      <template v-slot:prepend="{ isActive }">
-                          <v-list-item-action start>
-                            <v-radio :model-value="isActive"></v-radio>
-                          </v-list-item-action>
-                      </template>
+        <v-window v-model:model-value="steps" class="h-100">
+          <v-window-item value="step-1" class="h-100">
+              <v-list v-model:selected="inputType" density="compact" :mandatory="true">
+                <v-list-subheader title="Select SDP type"></v-list-subheader>
+                <v-list-item v-for="(value, index) in ['offer', 'answer']"
+                             density="compact" :key="index" :value="value" :title="value">
+                  <template v-slot:prepend="{ isActive }">
+                    <v-list-item-action>
+                      <v-radio :model-value="isActive"></v-radio>
+                    </v-list-item-action>
+                  </template>
                 </v-list-item>
-            </v-list>
+              </v-list>
+              <v-list v-model:selected="controlsStore.selectedChannel"
+                      :mandatory="true" class="h-100">
+                <v-list-subheader title="Select the channel"></v-list-subheader>
+                <v-list-item v-for="(value, key, index) in webrtcStore.connectionsMetaData"
+                             :key="index" :value="key" :title="value.channelName">
+                  <template v-slot:prepend="{ isActive }">
+                    <v-list-item-action>
+                      <v-radio :model-value="isActive"></v-radio>
+                    </v-list-item-action>
+                  </template>
+                </v-list-item>
+              </v-list>
           </v-window-item>
           <v-window-item value="step-2" style="background-color: green;">
 
@@ -48,10 +54,9 @@ const controlsStore = UseControlsStore()
 const webrtcStore = UseWebRTCStore()
 
 const steps = ref('step-1')
-const inputType = ref('offer')
-const channelName = ref(null)
+const inputType = ref()
 
-const placeholder = ref('paste your sdp protocol information here')
+// const placeholder = ref('paste your sdp protocol information here')
 const processSDP = () => {
 
 }
