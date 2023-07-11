@@ -1,16 +1,16 @@
 <template>
   <v-hover v-slot="{ isHovering, props }">
     <v-card v-if="connectionsAvailable" v-bind="props">
-      <v-img cover :lazySrc="qrCodeDataUrl" :src="qrCodeDataUrl">
+      <v-img :cover="true" :lazySrc="qrCodeDataUrl" :src="qrCodeDataUrl">
         <v-expand-x-transition>
           <div
             v-if="isHovering"
             class="d-flex justify-center align-center bg-white"
             style="height: 100%; opacity: 0.9"
           >
-            <v-btn icon flat><v-icon>mdi-share-variant</v-icon></v-btn>
-            <v-btn icon flat><v-icon>mdi-content-copy</v-icon></v-btn>
-            <v-btn icon flat><v-icon>mdi-download</v-icon></v-btn>
+            <v-btn icon :flat="true"><v-icon>mdi-share-variant</v-icon></v-btn>
+            <v-btn icon :flat="true" @click="copyContent"><v-icon>mdi-content-copy</v-icon></v-btn>
+            <v-btn icon :flat="true"><v-icon>mdi-download</v-icon></v-btn>
           </div>
         </v-expand-x-transition>
       </v-img>
@@ -35,4 +35,10 @@ const connectionsAvailable = computed(() => {
 const qrCodeDataUrl = computed(() => {
   return webrtcStore.getQRCode(controlsStore.selectedChannel)
 })
+
+const copyContent = async () => {
+  let channelName = controlsStore.selectedChannel
+  let sessionDescription = webrtcStore.getLocalDescription(channelName)
+  await navigator.clipboard.writeText(sessionDescription)
+}
 </script>

@@ -15,7 +15,7 @@
                <v-icon icon="mdi-account" size="200" v-else></v-icon>
              </v-avatar>
            </div>
-            <v-text-field label="Channel name" variant="solo-filled"
+            <v-text-field label="Channel name" variant="solo"
                           :rules="channelNameRules" :readonly="channelNameReadOnly"
                           :flat="true" :autofocus="true" v-model="channelName" />
           </v-col>
@@ -25,8 +25,7 @@
         <v-spacer></v-spacer>
         <v-btn variant="text" @click="closeDialog">close</v-btn>
         <v-btn variant="text" :disabled="isDisabled || channelNameReadOnly" 
-                @click="initConnection" color="primary"
-                >create</v-btn>
+                @click="initConnection">create</v-btn>
       </v-card-actions>
     </v-card>
   </v-dialog>
@@ -76,16 +75,12 @@ const isDisabled = computed(() => {
   return false
 })
 
-const channelQRCode = computed(() => {
-  if(rtcConnection.value && rtcConnection.value.localDescription) {
-    return webrtcStore.getQRCode(channelName.value)
-  }
-  return null
-})
 const initConnection = async () => {
   channelNameReadOnly.value = true
   rtcConnection.value = await webrtcStore.initNewConnection(channelName.value, multiAvatar.value)
   await webrtcStore.createOffer(channelName.value, rtcConnection.value)
+
+  closeDialog()
 }
 
 const resetDialogState = () => {

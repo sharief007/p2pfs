@@ -27,48 +27,59 @@ const UseWebRTCStore = defineStore('webrtc', {
         let metadata = state.connectionsMetaData[channelName] || {}
         return metadata['qrCode']
       }
+    },
+    getRTCConnection(state) {
+      return (channelName) => state.connectionsMap[channelName]
+    },
+    getLocalDescription(state) {
+      return (channelName) => state.connectionsMetaData[channelName]['localDescription']
     }
   },
   actions: {
-    async initNewConnection(channelName, multiAvatar) {
-      const imageStore = UseImageStore()
-      const controlsStore = UseControlsStore()
+    async _newConnection(channelName) {
+      delete this.connectionsMap[channelName]
+      delete this.dataChannelMap[channelName]
 
+      const imageStore = UseImageStore()
       const connection = new RTCPeerConnection()
 
-      connection.onicecandidate = async () => {
-        let localDescription = JSON.stringify(connection.localDescription)
-        console.log(localDescription)
-
-        this.connectionsMetaData[channelName]['qrCode'] =
-          imageStore.generateQRCode(localDescription)
+      connection.onicecandidate = () => {
+        let sdpString = JSON.stringify(connection.localDescription)
+        this.connectionsMetaData[channelName]['localDescription'] = sdpString
+        this.connectionsMetaData[channelName]['qrCode'] = imageStore.generateQRCode(sdpString)
+        console.log(sdpString)
       }
 
-      connection.ondatachannel = async (e) => {
+      connection.ondatachannel = (e) => {
         const dataChannelSet = this.dataChannelMap[channelName] || new Set()
         const dataChannel = e.channel
         dataChannel.onopen = async (e) => {
           console.log(`Data channel opened`, JSON.stringify(e))
         }
 
-        dataChannel.onmessage = async (e) => {
-          let data = new TextDecoder().decode(e.data)
-          console.log(data)
+        dataChannel.onmessage = (e) => {
+          // let data = new TextDecoder().decode(e.data)
+          console.log(e)
         }
 
         dataChannelSet.add(dataChannel)
         this.dataChannelMap[channelName] = dataChannelSet
       }
-
       this.connectionsMap[channelName] = connection
+      return connection
+    },
+    async initNewConnection(channelName, multiAvatar) {
+      const controlsStore = UseControlsStore()
+      const rtcConnection = this._newConnection(channelName)
       this.connectionsMetaData[channelName] = {
         channelName: channelName,
         qrCode: null,
+        localDescription: '',
         avatar: multiAvatar,
         createdAt: Date.now()
       }
       controlsStore.setSelectedChannel(channelName)
-      return connection
+      return rtcConnection
     },
     async createOffer(channelName, rtcConnection) {
       let label = `${channelName}-${Date.now()}`
@@ -85,6 +96,11 @@ const UseWebRTCStore = defineStore('webrtc', {
       const dataChannel = await rtcConnection.createDataChannel(label)
       dataChannel.onopen = async (e) => {
         console.log(`Data channel opened`, JSON.stringify(e))
+
+        setInterval(()=> {
+          console.log(dataChannel)
+          dataChannel.send("Wasssuppp")
+        }, 3000)
       }
 
       dataChannel.onmessage = async (e) => {
@@ -92,39 +108,26 @@ const UseWebRTCStore = defineStore('webrtc', {
       }
       return dataChannel
     },
-    async acceptOffer(offer) {
-      offer = JSON.parse(offer)
-      await this.connection.setRemoteDescription(offer)
-      let answer = await this.connection.createAnswer()
-      await this.connection.setLocalDescription(answer)
-      this.sdp = JSON.stringify(this.connection.localDescription)
-      await navigator.clipboard.writeText(this.sdp)
-      console.log(`answer created`, JSON.stringify(this.connection.localDescription))
+    async acceptOffer(channelName, offerString) {
+      const rtcConnection = await this._newConnection(channelName)
+      const offer = JSON.parse(offerString)
+      console.log(offerString, offer)
+      await rtcConnection.setRemoteDescription(offer)
+      console.log("Remote description set, creating answer")
+      let answer = await rtcConnection.createAnswer()
+      await rtcConnection.setLocalDescription(answer)
+      this.sdp = JSON.stringify(rtcConnection.localDescription)
+      console.log(`answer created`, JSON.stringify(rtcConnection.localDescription))
+
+      setInterval(()=>{
+        console.log( this.dataChannelMap[channelName])
+        // datachan.send(new Date().toDateString())
+      }, 3000)
     },
-    async acceptAnswer(answer) {
+    async acceptAnswer(answer, rtcConnection) {
       answer = JSON.parse(answer)
-      await this.connection.setRemoteDescription(answer)
+      await rtcConnection.setRemoteDescription(answer)
       console.log(`remote description set.`)
-      await this.readFile()
-    },
-    async readFile() {
-      // let [fileHandler] = await window.showOpenFilePicker({
-      //     mutiple: true
-      // })
-      // let file = await fileHandler.getFile()
-      // let chunckSize = 64 * 1024 // 64kB
-      //
-      //
-      // for (let i=0; i<=file.size; i += chunckSize) {
-      //     let chunk = file.slice(i, i + chunckSize)
-      //     let fileReader = new FileReader()
-      //     fileReader.onload = (event) => {
-      //         let buffer = event.target.result
-      //         this.datachan.send(buffer)
-      //         console.log(buffer)
-      //     }
-      //     fileReader.readAsArrayBuffer(chunk)
-      // }
     }
   }
 })

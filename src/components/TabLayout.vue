@@ -59,7 +59,7 @@ const colCount = computed(() => {
     case 'md':
       return 2
     case 'lg': {
-      return controlsStore.rightDrawer || controlsStore.rightDrawer ? 2 : 3
+      return controlsStore.leftDrawer || controlsStore.rightDrawer ? 2 : 3
     }
     case 'xl':
       return 3
