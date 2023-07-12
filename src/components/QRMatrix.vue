@@ -8,7 +8,7 @@
             class="d-flex justify-center align-center bg-white"
             style="height: 100%; opacity: 0.9"
           >
-            <v-btn icon :flat="true"><v-icon>mdi-share-variant</v-icon></v-btn>
+            <v-btn icon :flat="true" @click="shareContent" v-if="canShare"><v-icon>mdi-share-variant</v-icon></v-btn>
             <v-btn icon :flat="true" @click="copyContent"><v-icon>mdi-content-copy</v-icon></v-btn>
             <v-btn icon :flat="true"><v-icon>mdi-download</v-icon></v-btn>
           </div>
@@ -23,10 +23,11 @@ import { computed } from 'vue'
 
 import UseControlsStore from '../store/controlsStore'
 import UseWebRTCStore from '../store/webrtcStore'
+import UseImageStore from "../store/imageStore";
 
-// const controlStore = UseControlsStore()
 const webrtcStore = UseWebRTCStore()
 const controlsStore = UseControlsStore()
+const imageStore = UseImageStore()
 
 const connectionsAvailable = computed(() => {
   return Object.keys(webrtcStore.connectionsMap).length > 0
@@ -36,9 +37,36 @@ const qrCodeDataUrl = computed(() => {
   return webrtcStore.getQRCode(controlsStore.selectedChannel)
 })
 
+const canShare = computed(() => {
+  return navigator.share && navigator.canShare
+})
+
 const copyContent = async () => {
   let channelName = controlsStore.selectedChannel
   let sessionDescription = webrtcStore.getLocalDescription(channelName)
   await navigator.clipboard.writeText(sessionDescription)
+}
+
+const shareContent = async () => {
+  let channelName = controlsStore.selectedChannel
+  let sessionDescription = webrtcStore.getLocalDescription(channelName)
+  let qrCodeBlob = imageStore.dataURLtoBlob(qrCodeDataUrl.value)
+  if(navigator.canShare({
+    files: [qrCodeBlob]
+  })) {
+    console.log("Sharing blob")
+    await navigator.share({
+      title: "SDP",
+      url: window.location.href,
+      text: sessionDescription,
+      files: [qrCodeBlob]
+    })
+  } else {
+    await navigator.share({
+      title: "SDP",
+      url: window.location.href,
+      text: sessionDescription
+    })
+  }
 }
 </script>
