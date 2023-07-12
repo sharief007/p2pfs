@@ -8,7 +8,7 @@
             class="d-flex justify-center align-center bg-white"
             style="height: 100%; opacity: 0.9"
           >
-            <v-btn icon :flat="true" @click="shareContent" v-if="canShare"><v-icon>mdi-share-variant</v-icon></v-btn>
+            <v-btn icon :flat="true" @click="shareContent" v-if="isWebShareSupported"><v-icon>mdi-share-variant</v-icon></v-btn>
             <v-btn icon :flat="true" @click="copyContent"><v-icon>mdi-content-copy</v-icon></v-btn>
             <v-btn icon :flat="true"><v-icon>mdi-download</v-icon></v-btn>
           </div>
@@ -33,6 +33,10 @@ const connectionsAvailable = computed(() => {
 
 const qrCodeDataUrl = computed(() => {
   return webrtcStore.getQRCode(controlsStore.selectedChannel)
+})
+
+const isWebShareSupported = computed(() => {
+  return 'share' in navigator
 })
 
 const copyContent = async () => {

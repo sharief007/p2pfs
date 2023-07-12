@@ -8,7 +8,8 @@ const UseControlsStore = defineStore('controls', {
     createChannel: false,
     channelNameReadOnly: false,
     selectedChannel: null,
-    qrCodeModal: null
+    qrCodeModal: null,
+    filePickerModal: null
   }),
   getters: {},
   actions: {
@@ -36,6 +37,12 @@ const UseControlsStore = defineStore('controls', {
     },
     showQRCodeModal() {
       this.qrCodeModal = true
+    },
+    showFilePickerModal() {
+      this.filePickerModal = true
+    },
+    hideFilePickerModal() {
+      this.filePickerModal = false
     }
   }
 })

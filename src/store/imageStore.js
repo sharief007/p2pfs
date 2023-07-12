@@ -25,6 +25,15 @@ const UseImageStore = defineStore('images', {
       }
       let blob = new Blob([u8arr], {type:mime});
       return new File([blob], 'QRCode.svg', { type: blob.type })
+    },
+    convertFileSize(bytes) {
+      const sizes = ['Bytes', 'KB', 'MB', 'GB']
+      if (bytes === 0) return '0 Byte'
+      const i = Math.floor(Math.log(bytes) / Math.log(1024))
+      const value = bytes / Math.pow(1024, i)
+      // round value to two decimals
+      const size = Math.round( value * 100) / 100
+      return size + ' ' + sizes[i]
     }
   }
 })

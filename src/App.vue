@@ -12,7 +12,7 @@
         <v-icon>mdi-shield-refresh</v-icon>
       </v-btn>
       <SDPReader />
-      <v-btn icon><v-icon>mdi-file-send</v-icon></v-btn>
+      <FilePicker />
     </v-app-bar>
     <v-main>
       <Tabs />
@@ -23,6 +23,7 @@
 <script setup>
 import LeftSidebar from './components/LeftSidebar.vue'
 import Tabs from './components/TabLayout.vue'
+import FilePicker from "./components/FilePicker.vue";
 
 import UseControlsStore from './store/controlsStore'
 import SDPReader from './components/SDPReader.vue';
