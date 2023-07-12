@@ -57,14 +57,12 @@ const shareContent = async () => {
     console.log("Sharing blob")
     await navigator.share({
       title: "SDP",
-      url: window.location.href,
       text: sessionDescription,
       files: [qrCodeBlob]
     })
   } else {
     await navigator.share({
       title: "SDP",
-      url: window.location.href,
       text: sessionDescription
     })
   }
