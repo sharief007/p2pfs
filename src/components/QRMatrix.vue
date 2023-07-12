@@ -23,11 +23,9 @@ import { computed } from 'vue'
 
 import UseControlsStore from '../store/controlsStore'
 import UseWebRTCStore from '../store/webrtcStore'
-import UseImageStore from "../store/imageStore";
 
 const webrtcStore = UseWebRTCStore()
 const controlsStore = UseControlsStore()
-const imageStore = UseImageStore()
 
 const connectionsAvailable = computed(() => {
   return Object.keys(webrtcStore.connectionsMap).length > 0
@@ -35,10 +33,6 @@ const connectionsAvailable = computed(() => {
 
 const qrCodeDataUrl = computed(() => {
   return webrtcStore.getQRCode(controlsStore.selectedChannel)
-})
-
-const canShare = computed(() => {
-  return navigator.share && navigator.canShare
 })
 
 const copyContent = async () => {
@@ -50,21 +44,11 @@ const copyContent = async () => {
 const shareContent = async () => {
   let channelName = controlsStore.selectedChannel
   let sessionDescription = webrtcStore.getLocalDescription(channelName)
-  let qrCodeBlob = imageStore.dataURLtoBlob(qrCodeDataUrl.value)
-  if(navigator.canShare({
-    files: [qrCodeBlob]
-  })) {
-    console.log("Sharing blob")
-    await navigator.share({
-      title: "SDP",
-      text: sessionDescription,
-      files: [qrCodeBlob]
-    })
-  } else {
-    await navigator.share({
-      title: "SDP",
-      text: sessionDescription
-    })
-  }
+
+  await navigator.share({
+    title: "SDP",
+    url: window.location.href,
+    text: sessionDescription
+  })
 }
 </script>
