@@ -13,27 +13,31 @@
       ></v-text-field>
       <CreateChannel />
     </v-toolbar>
-    <v-list v-model:selected="controlsStore.selectedChannel" 
-            :nav="true" :mandatory="true" class="flex-grow-1 overflow-y-auto">
-      <v-list-item
-        v-for="(value, key) in webrtcStore.connectionsMetaData"
-        density="compact"
-        :key="key"
+    <v-list v-model:selected="controlsStore.selectedChannel" density="compact"
+           :mandatory="true" class="flex-grow-1 overflow-y-auto ">
+      <v-list-item lines="one"
+        v-for="(value, key, index) in webrtcStore.connectionsMetaData"
+        :key="index"
         :value="key"
         :active="
           controlsStore.selectedChannel &&
           (controlsStore.selectedChannel === key || controlsStore.selectedChannel[0] === key)
         "
+        :title="value.channelName"
+        density="compact"
       >
-        <v-list-item-title>{{ value.channelName }}</v-list-item-title>
-        <v-list-item-subtitle>{{ value.createdAt }}</v-list-item-subtitle>
+<!--        <v-list-item-title>{{ value.channelName }}</v-list-item-title>-->
+<!--        <v-list-item-subtitle>{{ value.state }}</v-list-item-subtitle>-->
         <template v-slot:prepend>
-          <v-avatar density="compact" :image="value.avatar"></v-avatar>
+          <v-list-item-action :start="true">
+            <v-badge :dot="true" color="success" location="bottom end">
+              <v-avatar density="compact" :image="value.avatar"></v-avatar>
+            </v-badge>
+          </v-list-item-action>
         </template>
         <template v-slot:append>
-          <v-list-item-action>
-            <v-icon icon="mdi-information" size="small"></v-icon>
-            <v-icon icon="mdi-trash-can"></v-icon>
+          <v-list-item-action :end="true">
+            <v-icon icon="mdi-trash-can" @click="discardConnection"></v-icon>
           </v-list-item-action>
         </template>
       </v-list-item>
@@ -50,7 +54,7 @@ import UseControlsStore from '../store/controlsStore'
 const webrtcStore = UseWebRTCStore()
 const controlsStore = UseControlsStore()
 
-// const chanceSelection = (event) => {
-//   controlsStore.setSelectedChannel(event.id)
-// }
+const discardConnection = (event) => {
+  console.log(event)
+}
 </script>

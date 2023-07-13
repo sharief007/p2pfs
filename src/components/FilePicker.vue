@@ -15,7 +15,7 @@
                 <th class="text-left">File Size</th>
               </tr>
               </thead>
-              <tbody class="h-100 overflow-y-auto bg-amber">
+              <tbody class="h-100 overflow-y-auto">
               <tr v-for="(item, i) in selectedFiles" :key="item"
                   :class="item.isSelected ? 'bg-grey-lighten-1' : ''">
                 <td>
@@ -30,7 +30,7 @@
           </v-window-item>
           <v-window-item value="step-2">
             <v-list density="compact" height="600" :mandatory="true"
-                    v-model:selected="controlsStore.selectedChannel">
+                    v-model:selected="selectedChannels" select-strategy="independent" >
               <v-list-subheader title="Select the target channel"></v-list-subheader>
               <v-list-item v-for="(value, key, index) in webrtcStore.connectionsMetaData"
                            :key="index" :value="key" :title="value.channelName">
@@ -65,6 +65,7 @@ const controlsStore = UseControlsStore()
 const imageStore = UseImageStore()
 const webrtcStore = UseWebRTCStore()
 
+const selectedChannels = ref([])
 const selectedFiles = ref([])
 const steps = ref('step-1')
 

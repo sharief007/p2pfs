@@ -65,16 +65,24 @@ const UseWebRTCStore = defineStore('webrtc', {
         dataChannelSet.add(dataChannel)
         this.dataChannelMap[channelName] = dataChannelSet
       }
+
+      connection.onconnectionstatechange = (e) => {
+        console.log(e)
+        this.connectionsMetaData[channelName]['state'] = connection.connectionState
+      }
+
       this.connectionsMap[channelName] = connection
       return connection
     },
     async initNewConnection(channelName, multiAvatar) {
       const controlsStore = UseControlsStore()
-      const rtcConnection = this._newConnection(channelName)
+      const rtcConnection = await this._newConnection(channelName)
+      console.log(rtcConnection)
       this.connectionsMetaData[channelName] = {
         channelName: channelName,
         qrCode: null,
         localDescription: '',
+        state: rtcConnection.connectionState,
         avatar: multiAvatar,
         createdAt: Date.now()
       }
