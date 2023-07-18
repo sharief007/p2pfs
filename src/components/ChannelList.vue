@@ -2,35 +2,36 @@
   <div class="d-flex flex-column h-100">
     <v-toolbar density="comfortable" :flat="true">
       <v-text-field
+        v-model="filter"
         class="mx-2"
         density="compact"
         :flat="true"
-        hide-details
+        :hide-details="true"
         placeholder="Search..."
         prepend-inner-icon="mdi-magnify"
-        rounded
+        :rounded="true"
         variant="solo"
+        :clearable="true"
       ></v-text-field>
       <CreateChannel />
     </v-toolbar>
     <v-list v-model:selected="controlsStore.selectedChannel" density="compact"
            :mandatory="true" class="flex-grow-1 overflow-y-auto ">
       <v-list-item lines="one"
-        v-for="(value, key, index) in webrtcStore.connectionsMetaData"
+        v-for="(value, index) in filteredChannelList"
         :key="index"
-        :value="key"
+        :value="value.channelName"
         :active="
           controlsStore.selectedChannel &&
-          (controlsStore.selectedChannel === key || controlsStore.selectedChannel[0] === key)
+          (controlsStore.selectedChannel === value.channelName || controlsStore.selectedChannel[0] === value.channelName)
         "
         :title="value.channelName"
+        :subtitle="value.connectionState === 'new' ? 'created' : value.connectionState"
         density="compact"
       >
-<!--        <v-list-item-title>{{ value.channelName }}</v-list-item-title>-->
-<!--        <v-list-item-subtitle>{{ value.state }}</v-list-item-subtitle>-->
         <template v-slot:prepend>
           <v-list-item-action :start="true">
-            <v-badge :dot="true" color="success" location="bottom end">
+            <v-badge :dot="true" :color="value.color" location="bottom end">
               <v-avatar density="compact" :image="value.avatar"></v-avatar>
             </v-badge>
           </v-list-item-action>
@@ -50,9 +51,43 @@ import CreateChannel from './CreateChannel.vue'
 
 import UseWebRTCStore from '../store/webrtcStore'
 import UseControlsStore from '../store/controlsStore'
+import { ref, computed } from 'vue'
 
 const webrtcStore = UseWebRTCStore()
 const controlsStore = UseControlsStore()
+
+const filter = ref('')
+const filteredChannelList = computed(() => {
+  return Object.values(webrtcStore.connectionsMetaData)
+              .map(mapColor)
+              .filter(filterRegex)
+})
+
+const filterRegex = ({ channelName }) => {
+  let regex = Array.from(filter.value || '').join('.*')
+  let pattern = new RegExp(regex, "i")
+  return pattern.test(channelName)
+}
+
+const mapColor = (metadata) => {
+  metadata["color"] = getColorFromState(metadata)
+  return metadata
+}
+
+const getColorFromState = ({ connectionState }) => {
+  switch (connectionState) {
+    case "connected":
+      return "green"
+    case "connecting":
+      return "orange"
+    case "disconnected":
+    case "failed":
+    case "closed":
+      return "red"
+    default:
+      return "blue"
+  }
+}
 
 const discardConnection = (event) => {
   console.log(event)

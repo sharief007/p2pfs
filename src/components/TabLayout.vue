@@ -11,13 +11,13 @@
       <v-window-item value="progress">
         <v-container>
           <v-row v-for="i in rowCount" :key="i">
-            <v-col v-for="j in colCount" :key="j" :col="12 / colCount">
-              <Task />
+            <v-col v-for="j in colCount" :key="j" :col="12 / colCount" v-if="((i * colCount) + j) < activeTaskList.length">
+              <Task :value="activeTaskList[(i * colCount) + j]" />
             </v-col>
           </v-row>
         </v-container>
       </v-window-item>
-      <v-window-item value="completed"> </v-window-item>
+      <v-window-item value="completed"></v-window-item>
       <v-window-item value="failed"> </v-window-item>
     </v-window>
     <v-bottom-navigation :grow="true" mandatory v-if="smAndDown" v-model:model-value="tab">
@@ -42,13 +42,26 @@ import { ref, computed } from 'vue'
 import { useDisplay } from 'vuetify'
 
 import Task from './ActiveTask.vue'
-import { onMounted } from 'vue'
+import UseTaskStore from '../store/taskStore'
 import UseControlsStore from '../store/controlsStore'
 
-const tab = ref('progress')
-const taskList = ref([])
 const { smAndDown, sm, smAndUp, name } = useDisplay()
 const controlsStore = UseControlsStore()
+const taskStore = UseTaskStore()
+
+const tab = ref('progress')
+
+const activeTaskList = computed(() => {
+  return taskStore.taskList.filter(task => task.status in ["running"])
+})
+
+const completedTaskList = computed(() => {
+  return taskStore.taskList.filter(task => task.status === "completed")
+})
+
+const failedTaskList = computed(() => {
+  return taskStore.taskList.filter(task => task.status === ["error", "failed"])
+})
 
 const colCount = computed(() => {
   switch (name.value) {
@@ -71,12 +84,13 @@ const colCount = computed(() => {
 })
 
 const rowCount = computed(() => {
-  return Math.round(taskList.value.length / colCount.value)
-})
-
-onMounted(() => {
-  for (let i = 0; i < 10; i++) {
-    taskList.value.push(i)
+  if(tab.value === "failed") {
+    return Math.round(failedTaskList.value.length / colCount.value)
+  } else if(tab.value === "completed") {
+    return Math.round(completedTaskList.value.length / colCount.value)
+  } else {
+    return Math.round(activeTaskList.value.length / colCount.value)
   }
 })
+
 </script>

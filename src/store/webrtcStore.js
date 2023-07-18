@@ -68,7 +68,7 @@ const UseWebRTCStore = defineStore('webrtc', {
 
       connection.onconnectionstatechange = (e) => {
         console.log(e)
-        this.connectionsMetaData[channelName]['state'] = connection.connectionState
+        this.connectionsMetaData[channelName]['connectionState'] = connection.connectionState
       }
 
       this.connectionsMap[channelName] = connection
@@ -82,7 +82,7 @@ const UseWebRTCStore = defineStore('webrtc', {
         channelName: channelName,
         qrCode: null,
         localDescription: '',
-        state: rtcConnection.connectionState,
+        connectionState: rtcConnection.connectionState,
         avatar: multiAvatar,
         createdAt: Date.now()
       }

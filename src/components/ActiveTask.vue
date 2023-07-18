@@ -5,7 +5,6 @@
       color="grey-lighten-3"
       :model-value="progress"
       :striped="true"
-      buffer-value="10"
     >
       <v-card-item style="width: 100%">
         <v-card-title>Cafe Badilico</v-card-title>
@@ -27,7 +26,7 @@
           variant="text"
           :flat="true"
           size="small"
-          @click="console.log('I am here, MF!')"
+          @click="print"
           prepend-icon="mdi-play"
           >play</v-btn
         >
@@ -40,4 +39,9 @@
 <script setup>
 import { ref } from 'vue'
 const progress = ref(Math.round(Math.random() * 100))
+
+const props = defineProps(["value"])
+const print = () => {
+  console.log(props)
+}
 </script>

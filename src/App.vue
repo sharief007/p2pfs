@@ -2,7 +2,7 @@
   <v-app id="inspire">
     <LeftSidebar />
     <!--    <RightSidebar />-->
-    <v-app-bar :flat="true" border density="compact">
+    <v-app-bar :flat="true" :border="true" density="compact">
       <v-toolbar-title>P2PFS</v-toolbar-title>
       <v-spacer></v-spacer>
       <v-btn icon @click="controlsStore.toggleLeftDrawer">

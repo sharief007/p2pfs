@@ -32,8 +32,8 @@
             <v-list density="compact" height="600" :mandatory="true"
                     v-model:selected="selectedChannels" select-strategy="independent" >
               <v-list-subheader title="Select the target channel"></v-list-subheader>
-              <v-list-item v-for="(value, key, index) in webrtcStore.connectionsMetaData"
-                           :key="index" :value="key" :title="value.channelName">
+              <v-list-item v-for="(value, index) in filteredChannels"
+                           :key="index" :value="value.channelName" :title="value.channelName">
                 <template v-slot:prepend="{ isActive }">
                   <v-list-item-action>
                     <v-checkbox-btn :model-value="isActive"></v-checkbox-btn>
@@ -57,7 +57,7 @@
 
 <script setup>
 import UseControlsStore from "../store/controlsStore";
-import { ref } from "vue";
+import { ref, computed } from "vue";
 import UseImageStore from "../store/imageStore";
 import UseWebRTCStore from "../store/webrtcStore";
 
@@ -89,6 +89,11 @@ const pickFiles = () => {
   fileInput.onchange = _fileHandler
   fileInput.click()
 }
+
+const filteredChannels = computed(() => {
+  return Object.values(webrtcStore.connectionsMetaData)
+            .filter((metadata) => metadata.connectionState === "connected")
+})
 
 const submitTask= () => {
 

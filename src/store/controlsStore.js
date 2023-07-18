@@ -26,7 +26,6 @@ const UseControlsStore = defineStore('controls', {
       this.sdpReader = false
     },
     showCreateChannel() {
-      console.log("I am here Bitch")
       this.createChannel = true
     },
     hideCreateChannel() {
