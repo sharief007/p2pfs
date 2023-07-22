@@ -3,14 +3,14 @@
     <v-progress-linear
       height="65"
       color="grey-lighten-3"
-      :model-value="progress"
+      :model-value="props.value.progress"
       :striped="true"
     >
       <v-card-item style="width: 100%">
-        <v-card-title>Cafe Badilico</v-card-title>
+        <v-card-title>{{ props.value.fileName }}</v-card-title>
         <v-card-subtitle class="d-flex flex-no-wrap justify-space-between">
-          <span>Local Favorite</span>
-          <span>12.3 MB</span>
+          <span>{{ props.value.fileType }}</span>
+          <span>{{ props.value.fileSize }}</span>
         </v-card-subtitle>
       </v-card-item>
     </v-progress-linear>
@@ -18,7 +18,7 @@
     <v-list-item density="compact" width="100%">
       <template v-slot:prepend>
         <span>
-          {{ `${progress}% completed` }}
+          {{ `${props.value.progress}% completed` }}
         </span>
       </template>
       <template v-slot:append>
@@ -37,11 +37,8 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
-const progress = ref(Math.round(Math.random() * 100))
-
 const props = defineProps(["value"])
 const print = () => {
-  console.log(props)
+  console.log(props.value)
 }
 </script>

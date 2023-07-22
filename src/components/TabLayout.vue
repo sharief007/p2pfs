@@ -11,8 +11,8 @@
       <v-window-item value="progress">
         <v-container>
           <v-row v-for="i in rowCount" :key="i">
-            <v-col v-for="j in colCount" :key="j" :col="12 / colCount" v-if="((i * colCount) + j) < activeTaskList.length">
-              <Task :value="activeTaskList[(i * colCount) + j]" />
+            <v-col v-for="j in colCount" :key="j" :col="12 / colCount">
+              <Task v-if="getIndex(i, j, colCount) < activeTaskList.length" :value="activeTaskList[getIndex(i, j, colCount)]" />
             </v-col>
           </v-row>
         </v-container>
@@ -52,7 +52,13 @@ const taskStore = UseTaskStore()
 const tab = ref('progress')
 
 const activeTaskList = computed(() => {
-  return taskStore.taskList.filter(task => task.status in ["running"])
+  let activeTasks = []
+  for(let task of taskStore.taskList) {
+    if (task.status == "running" || task.status == "pending") {
+      activeTasks.push(task)
+    }
+  }
+  return activeTasks
 })
 
 const completedTaskList = computed(() => {
@@ -60,7 +66,7 @@ const completedTaskList = computed(() => {
 })
 
 const failedTaskList = computed(() => {
-  return taskStore.taskList.filter(task => task.status === ["error", "failed"])
+  return taskStore.taskList.filter(task => task.status in ["error", "failed"])
 })
 
 const colCount = computed(() => {
@@ -93,4 +99,7 @@ const rowCount = computed(() => {
   }
 })
 
+const getIndex = (i, j, colCount) => {
+  return ((i-1) * colCount) + (j-1);
+}
 </script>

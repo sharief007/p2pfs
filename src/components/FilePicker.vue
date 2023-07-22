@@ -30,13 +30,13 @@
           </v-window-item>
           <v-window-item value="step-2">
             <v-list density="compact" height="600" :mandatory="true"
-                    v-model:selected="selectedChannels" select-strategy="independent" >
+                    v-model:selected="selectedChannels" >
               <v-list-subheader title="Select the target channel"></v-list-subheader>
               <v-list-item v-for="(value, index) in filteredChannels"
                            :key="index" :value="value.channelName" :title="value.channelName">
                 <template v-slot:prepend="{ isActive }">
                   <v-list-item-action>
-                    <v-checkbox-btn :model-value="isActive"></v-checkbox-btn>
+                    <v-radio :model-value="isActive"></v-radio>
                   </v-list-item-action>
                 </template>
               </v-list-item>
@@ -60,10 +60,12 @@ import UseControlsStore from "../store/controlsStore";
 import { ref, computed } from "vue";
 import UseImageStore from "../store/imageStore";
 import UseWebRTCStore from "../store/webrtcStore";
+import UseTaskStore from "../store/taskStore"
 
 const controlsStore = UseControlsStore()
 const imageStore = UseImageStore()
 const webrtcStore = UseWebRTCStore()
+const taskStore = UseTaskStore()
 
 const selectedChannels = ref([])
 const selectedFiles = ref([])
@@ -95,8 +97,14 @@ const filteredChannels = computed(() => {
             .filter((metadata) => metadata.connectionState === "connected")
 })
 
-const submitTask= () => {
-
+const submitTask = () => {
+  let filesToSubmit = []
+  for (let fileMeta of selectedFiles.value) {
+    if (fileMeta.isSelected) {
+      filesToSubmit.push(fileMeta)
+    }
+  }
+  taskStore.createTask(filesToSubmit, selectedChannels.value[0])
 }
 
 </script>

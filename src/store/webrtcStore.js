@@ -33,6 +33,9 @@ const UseWebRTCStore = defineStore('webrtc', {
     },
     getLocalDescription(state) {
       return (channelName) => state.connectionsMetaData[channelName]['localDescription']
+    },
+    getDataChannel(state) {
+      return (channelName) => state.dataChannelMap[channelName]
     }
   },
   actions: {
@@ -51,19 +54,22 @@ const UseWebRTCStore = defineStore('webrtc', {
       }
 
       connection.ondatachannel = (e) => {
-        const dataChannelSet = this.dataChannelMap[channelName] || new Set()
+        // const dataChannelSet = this.dataChannelMap[channelName] || new Set()
         const dataChannel = e.channel
         dataChannel.onopen = async (e) => {
           console.log(`Data channel opened`, JSON.stringify(e))
+          setInterval(()=> {
+            dataChannel.send(new Date().toLocaleTimeString())
+          }, 3000)
         }
 
         dataChannel.onmessage = (e) => {
           // let data = new TextDecoder().decode(e.data)
-          console.log(e)
+          console.log(`Received a message from ${channelName}: ${e.data}`)
         }
 
-        dataChannelSet.add(dataChannel)
-        this.dataChannelMap[channelName] = dataChannelSet
+        // dataChannelSet.add(dataChannel)
+        this.dataChannelMap[channelName] = dataChannel
       }
 
       connection.onconnectionstatechange = (e) => {
@@ -90,11 +96,10 @@ const UseWebRTCStore = defineStore('webrtc', {
       return rtcConnection
     },
     async createOffer(channelName, rtcConnection) {
-      let label = `${channelName}-${Date.now()}`
-      const dataChannel = await this.createDataChan(label, rtcConnection)
-      const dataChannelSet = this.dataChannelMap[channelName] || new Set()
-      dataChannelSet.add(dataChannel)
-      this.dataChannelMap[channelName] = dataChannelSet
+      const dataChannel = await this.createDataChan(channelName, rtcConnection)
+      // const dataChannelSet = this.dataChannelMap[channelName] || new Set()
+      // dataChannelSet.add(dataChannel)
+      this.dataChannelMap[channelName] = dataChannel
 
       let offer = await rtcConnection.createOffer()
       console.log(`Offer Created`)
@@ -106,13 +111,12 @@ const UseWebRTCStore = defineStore('webrtc', {
         console.log(`Data channel opened`, JSON.stringify(e))
 
         setInterval(()=> {
-          console.log(dataChannel)
-          dataChannel.send("Wasssuppp")
+          dataChannel.send(new Date().toLocaleTimeString())
         }, 3000)
       }
 
       dataChannel.onmessage = async (e) => {
-        console.log(`Received new Message`, e.data)
+        console.log(`Received new Message ${label}: ${e.data}`)
       }
       return dataChannel
     },
@@ -126,11 +130,6 @@ const UseWebRTCStore = defineStore('webrtc', {
       await rtcConnection.setLocalDescription(answer)
       this.sdp = JSON.stringify(rtcConnection.localDescription)
       console.log(`answer created`, JSON.stringify(rtcConnection.localDescription))
-
-      setInterval(()=>{
-        console.log( this.dataChannelMap[channelName])
-        // datachan.send(new Date().toDateString())
-      }, 3000)
     },
     async acceptAnswer(answer, rtcConnection) {
       answer = JSON.parse(answer)

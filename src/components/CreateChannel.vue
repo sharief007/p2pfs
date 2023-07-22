@@ -79,11 +79,9 @@ const initConnection = async () => {
   channelNameReadOnly.value = true
   rtcConnection.value = await webrtcStore.initNewConnection(channelName.value, multiAvatar.value)
   await webrtcStore.createOffer(channelName.value, rtcConnection.value)
-
-  closeDialog()
 }
 
-const resetDialogState = () => {
+const resetDialogState = async () => {
   channelNameReadOnly.value = false
   rtcConnection.value = null
   channelName.value = ""
