@@ -21,9 +21,9 @@
                 <td>
                   <v-checkbox-btn density="compact" v-model:model-value="selectedFiles[i].isSelected" :inline="true" />
                 </td>
-                <td> {{ item.fileName }}</td>
-                <td> {{ item.fileType}}</td>
-                <td> {{ item.fileSize}}</td>
+                <td> {{ item.content.name }}</td>
+                <td> {{ item.content.type }}</td>
+                <td> {{ item.fileSize }}</td>
               </tr>
               </tbody>
             </v-table>
@@ -56,8 +56,10 @@
 </template>
 
 <script setup>
-import UseControlsStore from "../store/controlsStore";
 import { ref, computed } from "vue";
+import { v4 } from "uuid"
+
+import UseControlsStore from "../store/controlsStore";
 import UseImageStore from "../store/imageStore";
 import UseWebRTCStore from "../store/webrtcStore";
 import UseTaskStore from "../store/taskStore"
@@ -76,8 +78,6 @@ const _fileHandler = (event) => {
   for(let file of filesList) {
     selectedFiles.value.push({
       content: file,
-      fileName: file.name,
-      fileType: file.type,
       fileSize: imageStore.convertFileSize(file.size),
       isSelected: true
     })
@@ -99,9 +99,10 @@ const filteredChannels = computed(() => {
 
 const submitTask = () => {
   let filesToSubmit = []
-  for (let fileMeta of selectedFiles.value) {
-    if (fileMeta.isSelected) {
-      filesToSubmit.push(fileMeta)
+  for (let fileMetaData of selectedFiles.value) {
+    if (fileMetaData.isSelected) {
+      fileMetaData.senderId = v4()
+      filesToSubmit.push(fileMetaData)
     }
   }
   taskStore.createTask(filesToSubmit, selectedChannels.value[0])

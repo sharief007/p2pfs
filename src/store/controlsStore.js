@@ -2,11 +2,11 @@ import { defineStore } from 'pinia'
 
 const UseControlsStore = defineStore('controls', {
   state: () => ({
+    notifications: [],
     leftDrawer: null,
-    rightDrawer: true,
+    rightDrawer: null,
     sdpReader: false,
     createChannel: false,
-    channelNameReadOnly: false,
     selectedChannel: null,
     qrCodeModal: null,
     filePickerModal: null
@@ -42,6 +42,18 @@ const UseControlsStore = defineStore('controls', {
     },
     hideFilePickerModal() {
       this.filePickerModal = false
+    },
+    pushNotification(channelName, message) {
+      this.notifications.push({
+        senderId : message.fileSenderId,
+        fileName: message.fileName,
+        fileType: message.fileType,
+        fileSize: message.fileSize, 
+        channelName
+      })
+    },
+    popNotification(index) {
+      this.notifications.splice(index, 1)
     }
   }
 })

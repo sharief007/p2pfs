@@ -1,7 +1,7 @@
 <template>
   <v-app id="inspire">
     <LeftSidebar />
-    <!--    <RightSidebar />-->
+    <RightSidebar />
     <v-app-bar :flat="true" :border="true" density="compact">
       <v-toolbar-title>P2PFS</v-toolbar-title>
       <v-spacer></v-spacer>
@@ -9,7 +9,8 @@
         <v-icon>mdi-account-group</v-icon>
       </v-btn>
       <v-btn icon @click="controlsStore.toggleRightDrawer">
-        <v-icon>mdi-shield-refresh</v-icon>
+        <v-icon v-if="showBadge">mdi-bell-badge</v-icon>
+        <v-icon v-else>mdi-bell</v-icon>
       </v-btn>
       <SDPReader />
       <FilePicker />
@@ -21,7 +22,10 @@
 </template>
 
 <script setup>
+import { computed } from "vue"
+
 import LeftSidebar from './components/LeftSidebar.vue'
+import RightSidebar from './components/RightSidebar.vue';
 import Tabs from './components/TabLayout.vue'
 import FilePicker from "./components/FilePicker.vue";
 
@@ -29,4 +33,8 @@ import UseControlsStore from './store/controlsStore'
 import SDPReader from './components/SDPReader.vue';
 
 const controlsStore = UseControlsStore()
+
+const showBadge = computed(() => {
+  return controlsStore.notifications.length > 0
+})
 </script>

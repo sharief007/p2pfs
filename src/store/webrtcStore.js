@@ -1,16 +1,17 @@
 import { defineStore } from 'pinia'
 import UseImageStore from './imageStore'
 import UseControlsStore from './controlsStore'
+import UseTaskStore from './taskStore'
 
 const UseWebRTCStore = defineStore('webrtc', {
   state: () => ({
-    configuration: {
-      configuration: {
-        offerToReceiveAudio: true,
-        offerToReceiveVideo: true
-      },
-      iceServers: [{ urls: 'stun:stun.l.google.com:19302' }]
-    },
+    // configuration: {
+    //   configuration: {
+    //     offerToReceiveAudio: true,
+    //     offerToReceiveVideo: true
+    //   },
+    //   iceServers: [{ urls: 'stun:stun.l.google.com:19302' }]
+    // },
     connectionsMetaData: {},
     connectionsMap: {},
     dataChannelMap: {}
@@ -56,18 +57,7 @@ const UseWebRTCStore = defineStore('webrtc', {
       connection.ondatachannel = (e) => {
         // const dataChannelSet = this.dataChannelMap[channelName] || new Set()
         const dataChannel = e.channel
-        dataChannel.onopen = async (e) => {
-          console.log(`Data channel opened`, JSON.stringify(e))
-          setInterval(()=> {
-            dataChannel.send(new Date().toLocaleTimeString())
-          }, 3000)
-        }
-
-        dataChannel.onmessage = (e) => {
-          // let data = new TextDecoder().decode(e.data)
-          console.log(`Received a message from ${channelName}: ${e.data}`)
-        }
-
+        this.initDataChannel(dataChannel, channelName)
         // dataChannelSet.add(dataChannel)
         this.dataChannelMap[channelName] = dataChannel
       }
@@ -79,6 +69,36 @@ const UseWebRTCStore = defineStore('webrtc', {
 
       this.connectionsMap[channelName] = connection
       return connection
+    },
+    initDataChannel(dataChannel, channelName) {
+      const controlsStore = UseControlsStore()
+      const taskStore = UseTaskStore()
+
+      dataChannel.onopen = async (e) => {
+        console.log(`Data channel opened`, JSON.stringify(e))
+        setInterval(()=> {
+          let message = JSON.stringify({date: new Date().toLocaleTimeString()})
+          dataChannel.send(message)
+        }, 3000)
+      }
+
+      dataChannel.onmessage = (e) => {
+        const message = JSON.parse(e.data)
+        switch(message.type) {
+          case "FILE_REQUEST": {
+            controlsStore.pushNotification(channelName, message)
+            break;
+          }
+          case "FILE_RESPONSE": {
+            taskStore.processResponse(channelName, message)
+            break;
+          }
+          default: {
+
+          }
+        }
+        console.log(`Received a message from ${channelName}: ${e.data}`)
+      }
     },
     async initNewConnection(channelName, multiAvatar) {
       const controlsStore = UseControlsStore()
@@ -105,19 +125,9 @@ const UseWebRTCStore = defineStore('webrtc', {
       console.log(`Offer Created`)
       await rtcConnection.setLocalDescription(offer)
     },
-    async createDataChan(label, rtcConnection) {
-      const dataChannel = await rtcConnection.createDataChannel(label)
-      dataChannel.onopen = async (e) => {
-        console.log(`Data channel opened`, JSON.stringify(e))
-
-        setInterval(()=> {
-          dataChannel.send(new Date().toLocaleTimeString())
-        }, 3000)
-      }
-
-      dataChannel.onmessage = async (e) => {
-        console.log(`Received new Message ${label}: ${e.data}`)
-      }
+    async createDataChan(channelName, rtcConnection) {
+      const dataChannel = await rtcConnection.createDataChannel(channelName)
+      this.initDataChannel(dataChannel, channelName)
       return dataChannel
     },
     async acceptOffer(channelName, offerString) {
