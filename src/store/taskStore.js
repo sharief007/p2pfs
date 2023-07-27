@@ -88,7 +88,7 @@ const UseTaskStore = defineStore('task', {
                 dataChannel.send(JSON.stringify({
                   fileSenderId,
                   fileReceiverId,
-                  content: event.target.result
+                  content: Array.from(new Uint8Array(event.target.result))
                 }))
           
                 offset += event.target.result.byteLength;
