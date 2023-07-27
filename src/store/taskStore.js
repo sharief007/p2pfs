@@ -73,7 +73,7 @@ const UseTaskStore = defineStore('task', {
         },
         readFile(file, dataChannel, currentTask, fileSenderId, fileReceiverId) {
             return new Promise((resolve, reject) => {
-              const chunkSize = 1024; 
+              const chunkSize = 1024 * 128; 
               let offset = 0;
               const reader = new FileReader();
           
