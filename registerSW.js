@@ -1,0 +1,1 @@
+if('serviceWorker' in navigator) {window.addEventListener('load', () => {navigator.serviceWorker.register('/p2pfs/sw.js', { scope: '/p2pfs/' })})}
