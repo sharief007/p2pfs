@@ -8,7 +8,9 @@
             class="d-flex justify-center align-center bg-white"
             style="height: 100%; opacity: 0.9"
           >
-            <v-btn icon :flat="true" @click="shareContent" v-if="isWebShareSupported"><v-icon>mdi-share-variant</v-icon></v-btn>
+            <v-btn icon :flat="true" @click="shareContent" v-if="isWebShareSupported"
+              ><v-icon>mdi-share-variant</v-icon></v-btn
+            >
             <v-btn icon :flat="true" @click="copyContent"><v-icon>mdi-content-copy</v-icon></v-btn>
             <v-btn icon :flat="true"><v-icon>mdi-download</v-icon></v-btn>
           </div>
@@ -50,7 +52,7 @@ const shareContent = async () => {
   let sessionDescription = webrtcStore.getLocalDescription(channelName)
 
   await navigator.share({
-    title: "SDP",
+    title: 'SDP',
     url: window.location.href,
     text: sessionDescription
   })

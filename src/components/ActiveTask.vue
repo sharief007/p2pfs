@@ -22,12 +22,7 @@
         </span>
       </template>
       <template v-slot:append>
-        <v-btn
-          variant="text"
-          :flat="true"
-          size="small"
-          @click="print"
-          prepend-icon="mdi-play"
+        <v-btn variant="text" :flat="true" size="small" @click="print" prepend-icon="mdi-play"
           >play</v-btn
         >
         <v-btn variant="text" :flat="true" size="small" prepend-icon="mdi-trash-can">delete</v-btn>
@@ -37,7 +32,7 @@
 </template>
 
 <script setup>
-const props = defineProps(["value"])
+const props = defineProps(['value'])
 const print = () => {
   console.log(props.value)
 }

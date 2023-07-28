@@ -15,15 +15,21 @@
       ></v-text-field>
       <CreateChannel />
     </v-toolbar>
-    <v-list v-model:selected="controlsStore.selectedChannel" density="compact"
-           :mandatory="true" class="flex-grow-1 overflow-y-auto ">
-      <v-list-item lines="one"
+    <v-list
+      v-model:selected="controlsStore.selectedChannel"
+      density="compact"
+      :mandatory="true"
+      class="flex-grow-1 overflow-y-auto"
+    >
+      <v-list-item
+        lines="one"
         v-for="(value, index) in filteredChannelList"
         :key="index"
         :value="value.channelName"
         :active="
           controlsStore.selectedChannel &&
-          (controlsStore.selectedChannel === value.channelName || controlsStore.selectedChannel[0] === value.channelName)
+          (controlsStore.selectedChannel === value.channelName ||
+            controlsStore.selectedChannel[0] === value.channelName)
         "
         :title="value.channelName"
         :subtitle="value.connectionState === 'new' ? 'created' : value.connectionState"
@@ -58,34 +64,32 @@ const controlsStore = UseControlsStore()
 
 const filter = ref('')
 const filteredChannelList = computed(() => {
-  return Object.values(webrtcStore.connectionsMetaData)
-              .map(mapColor)
-              .filter(filterRegex)
+  return Object.values(webrtcStore.connectionsMetaData).map(mapColor).filter(filterRegex)
 })
 
 const filterRegex = ({ channelName }) => {
   let regex = Array.from(filter.value || '').join('.*')
-  let pattern = new RegExp(regex, "i")
+  let pattern = new RegExp(regex, 'i')
   return pattern.test(channelName)
 }
 
 const mapColor = (metadata) => {
-  metadata["color"] = getColorFromState(metadata)
+  metadata['color'] = getColorFromState(metadata)
   return metadata
 }
 
 const getColorFromState = ({ connectionState }) => {
   switch (connectionState) {
-    case "connected":
-      return "green"
-    case "connecting":
-      return "orange"
-    case "disconnected":
-    case "failed":
-    case "closed":
-      return "red"
+    case 'connected':
+      return 'green'
+    case 'connecting':
+      return 'orange'
+    case 'disconnected':
+    case 'failed':
+    case 'closed':
+      return 'red'
     default:
-      return "blue"
+      return 'blue'
   }
 }
 

@@ -22,15 +22,15 @@
 </template>
 
 <script setup>
-import { computed } from "vue"
+import { computed } from 'vue'
 
 import LeftSidebar from './components/LeftSidebar.vue'
-import RightSidebar from './components/RightSidebar.vue';
+import RightSidebar from './components/RightSidebar.vue'
 import Tabs from './components/TabLayout.vue'
-import FilePicker from "./components/FilePicker.vue";
+import FilePicker from './components/FilePicker.vue'
 
 import UseControlsStore from './store/controlsStore'
-import SDPReader from './components/SDPReader.vue';
+import SDPReader from './components/SDPReader.vue'
 
 const controlsStore = UseControlsStore()
 

@@ -1,8 +1,8 @@
 {
-  "name": "vite-project",
+  "name": "p2pfs",
   "version": "0.0.0",
   "private": true,
-  "homepage": "https://sharief007.github.io/vite-project/",
+  "homepage": "https://sharief007.github.io/p2pfs/",
   "scripts": {
     "dev": "vite",
     "build": "vite build",

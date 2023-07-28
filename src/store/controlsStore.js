@@ -45,10 +45,11 @@ const UseControlsStore = defineStore('controls', {
     },
     pushNotification(channelName, message) {
       this.notifications.push({
-        senderId : message.fileSenderId,
+        senderId: message.fileSenderId,
         fileName: message.fileName,
         fileType: message.fileType,
-        fileSize: message.fileSize, 
+        fileSize: message.fileSize,
+        rawSize: message.rawSize,
         channelName
       })
     },

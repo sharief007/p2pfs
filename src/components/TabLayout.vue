@@ -12,12 +12,26 @@
         <v-container>
           <v-row v-for="i in rowCount" :key="i">
             <v-col v-for="j in colCount" :key="j" :col="12 / colCount">
-              <Task v-if="getIndex(i, j, colCount) < activeTaskList.length" :value="activeTaskList[getIndex(i, j, colCount)]" />
+              <Task
+                v-if="getIndex(i, j, colCount) < activeTaskList.length"
+                :value="activeTaskList[getIndex(i, j, colCount)]"
+              />
             </v-col>
           </v-row>
         </v-container>
       </v-window-item>
-      <v-window-item value="completed"></v-window-item>
+      <v-window-item value="completed">
+        <v-container>
+          <v-row v-for="i in rowCount" :key="i">
+            <v-col v-for="j in colCount" :key="j" :col="12 / colCount">
+              <Task
+                v-if="getIndex(i, j, colCount) < completedTaskList.length"
+                :value="completedTaskList[getIndex(i, j, colCount)]"
+              />
+            </v-col>
+          </v-row>
+        </v-container>
+      </v-window-item>
       <v-window-item value="failed"> </v-window-item>
     </v-window>
     <v-bottom-navigation :grow="true" mandatory v-if="smAndDown" v-model:model-value="tab">
@@ -53,8 +67,8 @@ const tab = ref('progress')
 
 const activeTaskList = computed(() => {
   let activeTasks = []
-  for(let task of taskStore.taskList) {
-    if (task.status == "running" || task.status == "pending") {
+  for (let task of taskStore.taskList) {
+    if (task.status === 'running' || task.status === 'pending') {
       activeTasks.push(task)
     }
   }
@@ -62,11 +76,11 @@ const activeTaskList = computed(() => {
 })
 
 const completedTaskList = computed(() => {
-  return taskStore.taskList.filter(task => task.status === "completed")
+  return taskStore.taskList.filter((task) => task.status === 'completed')
 })
 
 const failedTaskList = computed(() => {
-  return taskStore.taskList.filter(task => task.status in ["error", "failed"])
+  return taskStore.taskList.filter((task) => task.status in ['error', 'failed', 'cancelled'])
 })
 
 const colCount = computed(() => {
@@ -90,9 +104,9 @@ const colCount = computed(() => {
 })
 
 const rowCount = computed(() => {
-  if(tab.value === "failed") {
+  if (tab.value === 'failed') {
     return Math.round(failedTaskList.value.length / colCount.value)
-  } else if(tab.value === "completed") {
+  } else if (tab.value === 'completed') {
     return Math.round(completedTaskList.value.length / colCount.value)
   } else {
     return Math.round(activeTaskList.value.length / colCount.value)
@@ -100,6 +114,6 @@ const rowCount = computed(() => {
 })
 
 const getIndex = (i, j, colCount) => {
-  return ((i-1) * colCount) + (j-1);
+  return (i - 1) * colCount + (j - 1)
 }
 </script>

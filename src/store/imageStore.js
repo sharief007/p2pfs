@@ -18,12 +18,14 @@ const UseImageStore = defineStore('images', {
     },
     dataURLtoBlob(dataurl) {
       let arr = dataurl.split(',')
-      let mime = arr[0].match(/:(.*?);/)[1], baseString = atob(arr[1]), n = baseString.length
-      let u8arr = new Uint8Array(n);
-      while(n--){
-        u8arr[n] = baseString.charCodeAt(n);
+      let mime = arr[0].match(/:(.*?);/)[1],
+        baseString = atob(arr[1]),
+        n = baseString.length
+      let u8arr = new Uint8Array(n)
+      while (n--) {
+        u8arr[n] = baseString.charCodeAt(n)
       }
-      let blob = new Blob([u8arr], {type:mime});
+      let blob = new Blob([u8arr], { type: mime })
       return new File([blob], 'QRCode.svg', { type: blob.type })
     },
     convertFileSize(bytes) {
@@ -32,7 +34,7 @@ const UseImageStore = defineStore('images', {
       const i = Math.floor(Math.log(bytes) / Math.log(1024))
       const value = bytes / Math.pow(1024, i)
       // round value to two decimals
-      const size = Math.round( value * 100) / 100
+      const size = Math.round(value * 100) / 100
       return size + ' ' + sizes[i]
     }
   }
