@@ -103,13 +103,21 @@ const colCount = computed(() => {
   }
 })
 
+const getRowCount = (list, colCount) => {
+  if (list.length) {
+    let value = Math.round(list.length / colCount)
+    return value > 0 ? value : 1
+  }
+  return 0
+}
+
 const rowCount = computed(() => {
   if (tab.value === 'failed') {
-    return Math.round(failedTaskList.value.length / colCount.value)
+    return getRowCount(failedTaskList.value, colCount.value)
   } else if (tab.value === 'completed') {
-    return Math.round(completedTaskList.value.length / colCount.value)
+    return getRowCount(completedTaskList.value, colCount.value)
   } else {
-    return Math.round(activeTaskList.value.length / colCount.value)
+    return getRowCount(activeTaskList.value, colCount.value)
   }
 })
 
