@@ -62,9 +62,11 @@
             v-model:model-value="SDP"
             density="compact"
             placeholder="Type here..."
+            :error-messages="errorMessages"
             variant="solo"
             :autofocus="true"
             :flat="true"
+            :loading="loading"
             rows="14"
             no-resize
           ></v-textarea>
@@ -77,10 +79,9 @@
         </v-window-item>
       </v-window>
       <v-card-actions>
+        <v-btn variant="text" prepend-icon="mdi-upload" @click="pickFile" v-if="steps === 'step-2'">upload</v-btn>
         <v-spacer></v-spacer>
-        <v-btn variant="text" @click="controlsStore.hideSDPReader" v-if="steps === 'step-1'"
-          >close</v-btn
-        >
+        <v-btn variant="text" @click="resetAndClose" v-if="steps === 'step-1'">close</v-btn>
         <v-btn variant="text" @click="steps = 'step-2'" v-if="steps === 'step-1'">next</v-btn>
         <v-btn variant="text" @click="steps = 'step-1'" v-if="steps === 'step-2'">previous</v-btn>
         <v-btn variant="text" @click="processSDP" v-if="steps === 'step-2'">confirm</v-btn>
@@ -99,9 +100,19 @@ const webrtcStore = UseWebRTCStore()
 
 const SDP = ref('')
 const steps = ref('step-1')
-const sdpType = ref()
-// const inputType = ref()
-// const userMedia = ref()
+const sdpType = ref(null)
+const errorMessages = ref('')
+const loading = ref(false)
+
+const resetAndClose = () => {
+  controlsStore.hideSDPReader()
+  steps.value= "step-1"
+  sdpType.value = null
+  SDP.value = ""
+  errorMessages.value = ""
+  loading.value = false
+}
+
 const processSDP = async () => {
   let selectedChannel = controlsStore.selectedChannel
   const rtcConnection = webrtcStore.getRTCConnection(selectedChannel)
@@ -113,6 +124,26 @@ const processSDP = async () => {
     await webrtcStore.acceptAnswer(SDP.value, rtcConnection)
     console.log('Answer Accepted')
   }
-  console.log("I'm Here MF !")
+
+  resetAndClose()
+}
+
+const pickFile = () => {
+  loading.value = true
+  const fileInput = document.createElement('input')
+  const filereader = new FileReader()
+  fileInput.type = 'file'
+  fileInput.style.display = 'none'
+  fileInput.onchange = (e) => {
+    filereader.readAsText(e.target.files[0])
+  }
+  filereader.onload = (e) => {
+    SDP.value = e.target.result
+    loading.value = false
+  }
+  filereader.onerror = (e) => {
+    errorMessages.value = e.target.error.message
+  }
+  fileInput.click()
 }
 </script>
