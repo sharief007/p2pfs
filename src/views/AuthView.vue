@@ -20,7 +20,7 @@ onMounted(()=> {
       snackBarColor.value = 'success'
       snackBarText.value = 'Authentication Successful.'
       snackBar.value = true
-      setTimeout(router.push,300, { name: "main"})
+      setTimeout(router.push,500, { name: "main"})
     }
   }).catch(err => {
     disabled.value = false

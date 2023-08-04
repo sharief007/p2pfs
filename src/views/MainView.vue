@@ -6,14 +6,28 @@ import Tabs from "@/components/TabLayout.vue";
 import SDPReader from "@/components/SDPReader.vue";
 import FilePicker from "@/components/FilePicker.vue";
 import UseControlsStore from "@/store/controlsStore";
-import { computed } from "vue";
+import { computed, onMounted } from "vue";
+import { getAuth, onAuthStateChanged, signOut } from "firebase/auth";
+import { useRouter } from "vue-router";
 
 const controlsStore = UseControlsStore()
+const router = useRouter()
 
 const showBadge = computed(() => {
   return controlsStore.notifications.length > 0
 })
 
+onMounted(() => {
+  onAuthStateChanged(getAuth(), (user) => {
+    if(!user) {
+      router.push({ name: 'auth'})
+    }
+  })
+})
+
+const logout = () => {
+  signOut(getAuth()).catch(console.log)
+}
 </script>
 
 <template>
@@ -32,6 +46,9 @@ const showBadge = computed(() => {
       </v-btn>
       <SDPReader />
       <FilePicker />
+      <v-btn icon @click="logout">
+        <v-icon>mdi-logout</v-icon>
+      </v-btn>
     </v-app-bar>
     <v-main>
       <Tabs />
