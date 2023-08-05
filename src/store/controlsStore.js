@@ -50,7 +50,7 @@ const UseControlsStore = defineStore('controls', {
         fileType: message.fileType,
         fileSize: message.fileSize,
         rawSize: message.rawSize,
-        channelName
+        channelName: Array.isArray(channelName) ? channelName[0] : channelName
       })
     },
     popNotification(index) {

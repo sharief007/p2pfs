@@ -48,7 +48,7 @@ const UseTaskStore = defineStore('task', {
     },
     acceptTask(metadata) {
       const webrtcStore = UseWebRTCStore()
-      const dataChannel = webrtcStore.getDataChannel(metadata.channelName[0])
+      const dataChannel = webrtcStore.getDataChannel(metadata.channelName)
 
       const currentTask = {
         fileReceiverId: metadata.receiverId,
@@ -98,7 +98,7 @@ const UseTaskStore = defineStore('task', {
     },
     readFile(file, dataChannel, currentTask) {
       return new Promise((resolve, reject) => {
-        const chunkSize = 1024
+        const chunkSize = 1024 * 16
 
         const { fileSenderId, fileReceiverId } = currentTask
         const reader = new FileReader()
