@@ -1,5 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import { getAuth, onAuthStateChanged } from "firebase/auth";
+import { getAuth, onAuthStateChanged } from 'firebase/auth'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -19,10 +19,14 @@ const router = createRouter({
 
 const getCurrentUser = () => {
   return new Promise((resolve, reject) => {
-    const removeListener = onAuthStateChanged(getAuth(), (user) => {
-      removeListener()
-      resolve(user)
-    }, reject)
+    const removeListener = onAuthStateChanged(
+      getAuth(),
+      (user) => {
+        removeListener()
+        resolve(user)
+      },
+      reject
+    )
   })
 }
 
@@ -31,7 +35,7 @@ router.beforeEach(async (to, from, next) => {
     if (await getCurrentUser()) {
       next()
     } else {
-      next({ name: "auth"})
+      next({ name: 'auth' })
     }
   }
   next()

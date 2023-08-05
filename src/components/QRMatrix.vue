@@ -25,7 +25,7 @@ import { computed } from 'vue'
 
 import UseControlsStore from '../store/controlsStore'
 import UseWebRTCStore from '../store/webrtcStore'
-import UseImageStore from '../store/imageStore';
+import UseImageStore from '../store/imageStore'
 
 const webrtcStore = UseWebRTCStore()
 const controlsStore = UseControlsStore()
@@ -50,16 +50,16 @@ const copyContent = async () => {
   await navigator.clipboard.writeText(getSDP())
 }
 
-const shareContent = async () => { 
+const shareContent = async () => {
   await navigator.share({
-      title: 'Session Description',
-      text: getSDP()
+    title: 'Session Description',
+    text: getSDP()
   })
 }
 
 const downloadContent = async () => {
   let fileName = `SDP_${Date.now()}.json`
-  let file = new File([getSDP()], fileName, { type: "application/json"})
+  let file = new File([getSDP()], fileName, { type: 'application/json' })
   let anchor = document.createElement('a')
   anchor.href = URL.createObjectURL(file)
   anchor.download = fileName

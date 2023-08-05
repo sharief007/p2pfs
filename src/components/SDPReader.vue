@@ -79,7 +79,9 @@
         </v-window-item>
       </v-window>
       <v-card-actions>
-        <v-btn variant="text" prepend-icon="mdi-upload" @click="pickFile" v-if="steps === 'step-2'">upload</v-btn>
+        <v-btn variant="text" prepend-icon="mdi-upload" @click="pickFile" v-if="steps === 'step-2'"
+          >upload</v-btn
+        >
         <v-spacer></v-spacer>
         <v-btn variant="text" @click="resetAndClose" v-if="steps === 'step-1'">close</v-btn>
         <v-btn variant="text" @click="steps = 'step-2'" v-if="steps === 'step-1'">next</v-btn>
@@ -106,10 +108,10 @@ const loading = ref(false)
 
 const resetAndClose = () => {
   controlsStore.hideSDPReader()
-  steps.value= "step-1"
+  steps.value = 'step-1'
   sdpType.value = null
-  SDP.value = ""
-  errorMessages.value = ""
+  SDP.value = ''
+  errorMessages.value = ''
   loading.value = false
 }
 

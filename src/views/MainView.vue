@@ -1,14 +1,14 @@
 <script setup>
-
-import LeftSidebar from "@/components/LeftSidebar.vue";
-import RightSidebar from "@/components/RightSidebar.vue";
-import Tabs from "@/components/TabLayout.vue";
-import SDPReader from "@/components/SDPReader.vue";
-import FilePicker from "@/components/FilePicker.vue";
-import UseControlsStore from "@/store/controlsStore";
-import { computed, onMounted } from "vue";
-import { getAuth, onAuthStateChanged, signOut } from "firebase/auth";
-import { useRouter } from "vue-router";
+import LeftSidebar from '@/components/LeftSidebar.vue'
+import RightSidebar from '@/components/RightSidebar.vue'
+import Tabs from '@/components/TabLayout.vue'
+import SDPReader from '@/components/SDPReader.vue'
+import FilePicker from '@/components/FilePicker.vue'
+import UseControlsStore from '@/store/controlsStore'
+import { computed, onMounted } from 'vue'
+import { getAuth, onAuthStateChanged } from 'firebase/auth'
+import { useRouter } from 'vue-router'
+import ProfileMenu from '@/components/ProfileMenu.vue'
 
 const controlsStore = UseControlsStore()
 const router = useRouter()
@@ -18,25 +18,20 @@ const showBadge = computed(() => {
 })
 
 onMounted(() => {
+  console.log(getAuth())
   onAuthStateChanged(getAuth(), (user) => {
-    if(!user) {
-      router.push({ name: 'auth'})
+    if (!user) {
+      router.push({ name: 'auth' })
     }
   })
 })
-
-const logout = () => {
-  signOut(getAuth()).catch(console.log)
-}
 </script>
 
 <template>
   <v-app id="inspire">
     <LeftSidebar />
     <RightSidebar />
-    <v-app-bar :flat="true" :border="true" density="compact">
-      <v-toolbar-title>P2PFS</v-toolbar-title>
-      <v-spacer></v-spacer>
+    <v-app-bar :flat="true" :border="true" density="compact" title="P2PFS">
       <v-btn icon @click="controlsStore.toggleLeftDrawer">
         <v-icon>mdi-account-group</v-icon>
       </v-btn>
@@ -46,9 +41,7 @@ const logout = () => {
       </v-btn>
       <SDPReader />
       <FilePicker />
-      <v-btn icon @click="logout">
-        <v-icon>mdi-logout</v-icon>
-      </v-btn>
+      <ProfileMenu />
     </v-app-bar>
     <v-main>
       <Tabs />
@@ -56,6 +49,4 @@ const logout = () => {
   </v-app>
 </template>
 
-<style scoped>
-
-</style>
+<style scoped></style>
