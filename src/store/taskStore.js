@@ -98,7 +98,7 @@ const UseTaskStore = defineStore('task', {
     },
     readFile(file, dataChannel, currentTask) {
       return new Promise((resolve, reject) => {
-        const chunkSize = 1024 * 16
+        const chunkSize = 1024
 
         const { fileSenderId, fileReceiverId } = currentTask
         const reader = new FileReader()
@@ -111,7 +111,7 @@ const UseTaskStore = defineStore('task', {
 
           // Process the chunk of data here (e.g., append to a result string, parse, etc.)
           let payload = JSON.stringify({
-            fileSenderId,
+            // fileSenderId,
             fileReceiverId,
             content: Array.from(new Uint8Array(event.target.result))
           })
