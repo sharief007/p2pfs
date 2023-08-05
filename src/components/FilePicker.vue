@@ -1,7 +1,9 @@
 <template>
   <v-dialog width="600" :persistent="true" v-model:model-value="controlsStore.filePickerModal">
     <template v-slot:activator>
-      <v-btn icon @click="controlsStore.showFilePickerModal"><v-icon>mdi-file-send</v-icon></v-btn>
+      <v-btn icon @click="controlsStore.showFilePickerModal"
+        ><v-icon>mdi-file-arrow-up-down</v-icon></v-btn
+      >
     </template>
     <v-card :hover="true" class="d-flex flex-column h-100">
       <v-window v-model:model-value="steps">

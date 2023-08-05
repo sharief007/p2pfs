@@ -149,16 +149,14 @@ const UseTaskStore = defineStore('task', {
         currentTask.progress = Math.round((currentTask.offset / currentTask.rawSize) * 100)
 
         if (currentTask.offset === currentTask.rawSize) {
-          currentTask.status = "completed"
+          currentTask.status = 'completed'
 
-          const file = new Blob(
-            this.receiverMap[fileReceiverId],
-            { type: currentTask.fileType || "application/octet-stream"}
-          )
+          const file = new Blob(this.receiverMap[fileReceiverId], {
+            type: currentTask.fileType || 'application/octet-stream'
+          })
           const anchor = document.createElement('a')
           anchor.href = URL.createObjectURL(file)
-          anchor.download = currentTask.fileName,
-          anchor.style.display = 'none'
+          ;(anchor.download = currentTask.fileName), (anchor.style.display = 'none')
           anchor.click()
           setTimeout(URL.revokeObjectURL, 10000, anchor.href)
         }
