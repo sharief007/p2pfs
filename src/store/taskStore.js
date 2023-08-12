@@ -1,5 +1,7 @@
 import { defineStore } from 'pinia'
+
 import UseWebRTCStore from './webrtcStore'
+import { TaskStatus, MessageType } from '../models/models'
 
 const UseTaskStore = defineStore('task', {
   state: () => ({
@@ -25,7 +27,7 @@ const UseTaskStore = defineStore('task', {
           fileType: item.content.type,
           rawSize: item.content.size,
           fileSize: item.fileSize,
-          status: 'pending',
+          status: TaskStatus.PENDING, //'pending',
           progress: 0,
           offset: 0
         })
@@ -33,7 +35,7 @@ const UseTaskStore = defineStore('task', {
         try {
           dataChannel.send(
             JSON.stringify({
-              type: 'FILE_REQUEST',
+              type: MessageType.FILE_REQUEST, //'FILE_REQUEST',
               fileSenderId: item.senderId,
               fileName: item.content.name,
               fileType: item.content.type,
@@ -57,7 +59,7 @@ const UseTaskStore = defineStore('task', {
         fileType: metadata.fileType,
         fileSize: metadata.fileSize,
         rawSize: metadata.rawSize,
-        status: 'running',
+        status: TaskStatus.ACTIVE, //'running',
         progress: 0,
         offset: 0
       }
@@ -69,7 +71,7 @@ const UseTaskStore = defineStore('task', {
       try {
         dataChannel.send(
           JSON.stringify({
-            type: 'FILE_RESPONSE',
+            type: MessageType.FILE_RESPONSE, //'FILE_RESPONSE',
             fileSenderId: metadata.senderId,
             fileReceiverId: metadata.receiverId
           })
@@ -90,10 +92,10 @@ const UseTaskStore = defineStore('task', {
         let file = this.senderMap[message.fileSenderId]
         this.readFile(file, dataChannel, currentTask).then(() => {
           console.log('File sending completed')
-          currentTask.status = 'completed'
+          currentTask.status = TaskStatus.COMPLETED  //'completed'
         })
       } else {
-        currentTask.status = 'cancelled'
+        currentTask.status = TaskStatus.CANCELLED  //'cancelled'
       }
     },
     readFile(file, dataChannel, currentTask) {
@@ -149,16 +151,21 @@ const UseTaskStore = defineStore('task', {
         currentTask.progress = Math.round((currentTask.offset / currentTask.rawSize) * 100)
 
         if (currentTask.offset === currentTask.rawSize) {
-          currentTask.status = 'completed'
+          currentTask.status = TaskStatus.COMPLETED     //'completed'
 
           const file = new Blob(this.receiverMap[fileReceiverId], {
             type: currentTask.fileType || 'application/octet-stream'
           })
           const anchor = document.createElement('a')
           anchor.href = URL.createObjectURL(file)
-          ;(anchor.download = currentTask.fileName), (anchor.style.display = 'none')
+          anchor.download = currentTask.fileName
+          anchor.style.display = 'none'
           anchor.click()
-          setTimeout(URL.revokeObjectURL, 10000, anchor.href)
+          setTimeout(()=> {
+            console.log('Deleting File content', fileReceiverId);
+            URL.revokeObjectURL(anchor.href)
+            delete this.receiverMap[fileReceiverId]
+          }, 10000)
         }
       }
     }

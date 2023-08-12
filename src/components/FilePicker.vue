@@ -46,10 +46,10 @@
           >
             <v-list-subheader title="Select the target channel"></v-list-subheader>
             <v-list-item
-              v-for="(value, index) in filteredChannels"
+              v-for="(channelName, index) in connectedChannels"
               :key="index"
-              :value="value.channelName"
-              :title="value.channelName"
+              :value="channelName"
+              :title="channelName"
             >
               <template v-slot:prepend="{ isActive }">
                 <v-list-item-action>
@@ -113,10 +113,14 @@ const pickFiles = () => {
   fileInput.click()
 }
 
-const filteredChannels = computed(() => {
-  return Object.values(webrtcStore.connectionsMetaData).filter(
-    (metadata) => metadata.connectionState === 'connected'
-  )
+const connectedChannels = computed(() => {
+  let filteredChannels = []
+  for(let channelMetaData of Object.values(webrtcStore.connectionsMetaData)) {
+    if (channelMetaData.connectionState === 'connected') {
+      filteredChannels.push(channelMetaData.channelName)
+    }
+  }
+  return filteredChannels
 })
 
 const submitTask = () => {

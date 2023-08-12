@@ -58,6 +58,7 @@ import { useDisplay } from 'vuetify'
 import Task from './ActiveTask.vue'
 import UseTaskStore from '../store/taskStore'
 import UseControlsStore from '../store/controlsStore'
+import { TaskStatus } from '../models/models'
 
 const { smAndDown, sm, smAndUp, name } = useDisplay()
 const controlsStore = UseControlsStore()
@@ -67,8 +68,8 @@ const tab = ref('progress')
 
 const activeTaskList = computed(() => {
   let activeTasks = []
-  for (let task of taskStore.taskList) {
-    if (task.status === 'running' || task.status === 'pending') {
+  for (const task of taskStore.taskList) {
+    if (task.status == TaskStatus.ACTIVE || task.status == TaskStatus.PENDING) {
       activeTasks.push(task)
     }
   }
@@ -76,11 +77,23 @@ const activeTaskList = computed(() => {
 })
 
 const completedTaskList = computed(() => {
-  return taskStore.taskList.filter((task) => task.status === 'completed')
+  let completedTasks = []
+  for(const task of taskStore.taskList) {
+    if (task.status == TaskStatus.REJECTED || task.status == TaskStatus.COMPLETED) {
+      completedTasks.push(task)
+    }
+  }
+  return completedTasks
 })
 
 const failedTaskList = computed(() => {
-  return taskStore.taskList.filter((task) => task.status in ['error', 'failed', 'cancelled'])
+  let failedTasks = []
+  for (const task of taskStore.taskList) {
+    if (task.status == TaskStatus.CANCELLED || task.status == TaskStatus.FAILED) {
+      failedTasks.push(task)
+    }
+  }
+  return failedTasks
 })
 
 const colCount = computed(() => {

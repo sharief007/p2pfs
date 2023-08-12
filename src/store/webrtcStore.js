@@ -3,6 +3,8 @@ import UseImageStore from './imageStore'
 import UseControlsStore from './controlsStore'
 import UseTaskStore from './taskStore'
 
+import { MessageType } from '../models/models'
+
 const UseWebRTCStore = defineStore('webrtc', {
   state: () => ({
     // configuration: {
@@ -85,11 +87,12 @@ const UseWebRTCStore = defineStore('webrtc', {
       dataChannel.onmessage = (e) => {
         const message = JSON.parse(e.data)
         switch (message.type) {
-          case 'FILE_REQUEST': {
+          case MessageType.FILE_REQUEST: {
+            
             controlsStore.pushNotification(channelName, message)
             break
           }
-          case 'FILE_RESPONSE': {
+          case MessageType.FILE_RESPONSE: {
             taskStore.processResponse(channelName, message)
             break
           }

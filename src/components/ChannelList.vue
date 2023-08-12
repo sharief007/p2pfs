@@ -63,22 +63,25 @@ const webrtcStore = UseWebRTCStore()
 const controlsStore = UseControlsStore()
 
 const filter = ref('')
+
 const filteredChannelList = computed(() => {
-  return Object.values(webrtcStore.connectionsMetaData).map(mapColor).filter(filterRegex)
+  let filteredChannels = []
+  for (let channelMetaData of Object.values(webrtcStore.connectionsMetaData)) {
+    if(filterRegex(channelMetaData.channelName)) {
+      channelMetaData['color'] = getColorFromState(channelMetaData.connectionState)
+      filteredChannels.push(channelMetaData)
+    }
+  }
+  return filteredChannels
 })
 
-const filterRegex = ({ channelName }) => {
+const filterRegex = (channelName) => {
   let regex = Array.from(filter.value || '').join('.*')
   let pattern = new RegExp(regex, 'i')
   return pattern.test(channelName)
 }
 
-const mapColor = (metadata) => {
-  metadata['color'] = getColorFromState(metadata)
-  return metadata
-}
-
-const getColorFromState = ({ connectionState }) => {
+const getColorFromState = (connectionState) => {
   switch (connectionState) {
     case 'connected':
       return 'green'
@@ -88,7 +91,7 @@ const getColorFromState = ({ connectionState }) => {
     case 'failed':
     case 'closed':
       return 'red'
-    default:
+    default:    // new
       return 'blue'
   }
 }
