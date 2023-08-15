@@ -42,7 +42,7 @@
             density="compact"
             height="600"
             :mandatory="true"
-            v-model:selected="selectedChannels"
+            v-model:selected="selectedChannel"
           >
             <v-list-subheader title="Select the target channel"></v-list-subheader>
             <v-list-item
@@ -61,16 +61,12 @@
         </v-window-item>
       </v-window>
       <v-card-actions>
-        <v-btn variant="text" prepend-icon="mdi-upload" @click="pickFiles" v-if="steps === 'step-1'"
-          >choose files</v-btn
-        >
+        <v-btn variant="text" prepend-icon="mdi-upload" @click="pickFiles" v-if="steps === 'step-1'">choose files</v-btn>
         <v-spacer></v-spacer>
-        <v-btn variant="text" @click="controlsStore.hideFilePickerModal" v-if="steps === 'step-1'"
-          >close</v-btn
-        >
-        <v-btn variant="text" @click="steps = 'step-2'" v-if="steps === 'step-1'">next</v-btn>
+        <v-btn variant="text" @click="closeFilePicker" v-if="steps === 'step-1'">close</v-btn>
+        <v-btn variant="text" @click="steps = 'step-2'" v-if="steps === 'step-1'" :disabled="!selectedFiles">next</v-btn>
         <v-btn variant="text" @click="steps = 'step-1'" v-if="steps === 'step-2'">previous</v-btn>
-        <v-btn variant="text" @click="submitTask" v-if="steps === 'step-2'">submit</v-btn>
+        <v-btn variant="text" @click="submitTask" v-if="steps === 'step-2'" :disabled="!selectedChannel">submit</v-btn>
       </v-card-actions>
     </v-card>
   </v-dialog>
@@ -90,7 +86,7 @@ const imageStore = UseImageStore()
 const webrtcStore = UseWebRTCStore()
 const taskStore = UseTaskStore()
 
-const selectedChannels = ref([])
+const selectedChannel = ref([])
 const selectedFiles = ref([])
 const steps = ref('step-1')
 
@@ -131,7 +127,14 @@ const submitTask = () => {
       filesToSubmit.push(fileMetaData)
     }
   }
-  taskStore.createTask(filesToSubmit, selectedChannels.value[0])
+  taskStore.createTask(filesToSubmit, selectedChannel.value[0])
+  closeFilePicker()
+}
+
+const closeFilePicker = () => {
+  selectedFiles.value = []
+  selectedChannel.value = []
+  controlsStore.hideFilePickerModal()
 }
 </script>
 
