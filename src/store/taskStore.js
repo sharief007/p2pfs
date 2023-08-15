@@ -88,17 +88,24 @@ const UseTaskStore = defineStore('task', {
       const currentTask = this.taskList[index]
       if (message.fileReceiverId) {
         currentTask.fileReceiverId = message.fileReceiverId
-
+        currentTask.status = TaskStatus.ACTIVE
         let file = this.senderMap[message.fileSenderId]
-        this.readFile(file, dataChannel, currentTask).then(() => {
-          console.log('File sending completed')
-          currentTask.status = TaskStatus.COMPLETED  //'completed'
-        })
+        this.triggerTask(file, dataChannel, currentTask)
       } else {
-        currentTask.status = TaskStatus.CANCELLED  //'cancelled'
+        currentTask.status = TaskStatus.REJECTED  //'cancelled'
       }
     },
-    readFile(file, dataChannel, currentTask) {
+    triggerTask(file, dataChannel, currentTask) {
+      this.executeTask(file, dataChannel, currentTask).then(() => {
+        if (currentTask.offset === currentTask.rawSize) {
+          console.log('File sending completed')
+          currentTask.status = TaskStatus.COMPLETED  //'completed'
+        }
+      }).catch(err => {
+        currentTask.status = TaskStatus.FAILED
+      })
+    },
+    executeTask(file, dataChannel, currentTask) {
       return new Promise((resolve, reject) => {
         const chunkSize = 1024
 
@@ -121,10 +128,12 @@ const UseTaskStore = defineStore('task', {
           currentTask.offset += event.target.result.byteLength
           currentTask.progress = Math.round((currentTask.offset / file.size) * 100)
 
-          if (currentTask.offset < file.size) {
-            readNextChunk()
-          } else {
+          if (currentTask.status !== TaskStatus.ACTIVE) {
             resolve()
+          } else if (currentTask.offset >= file.size) {
+            resolve()
+          } else {
+            readNextChunk()
           }
         }
 
@@ -166,6 +175,20 @@ const UseTaskStore = defineStore('task', {
             URL.revokeObjectURL(anchor.href)
             delete this.receiverMap[fileReceiverId]
           }, 10000)
+        }
+      }
+    },
+    toggleTaskExecution(fileSenderId) {
+      const webrtcStore = UseWebRTCStore()
+      const index = this.taskList.findIndex((task)=> task.fileSenderId === fileSenderId)
+      if (index > 0) {
+        let selectedTask = this.taskList[index]
+        if (selectedTask.status === TaskStatus.ACTIVE) {
+          selectedTask.status = TaskStatus.INACTIVE
+        } else {
+          selectedTask.status = TaskStatus.ACTIVE
+          const dataChannel = webrtcStore.getDataChannel(selectedTask.channelName)
+          this.triggerTask(this.senderMap[fileSenderId], dataChannel, selectedTask)
         }
       }
     }

@@ -1,5 +1,5 @@
 <template>
-  <v-dialog width="600" :persistent="true" v-model:model-value="controlsStore.filePickerModal">
+  <v-dialog width="auto" min-width="600" :persistent="true" v-model:model-value="controlsStore.filePickerModal">
     <template v-slot:activator>
       <v-btn icon @click="controlsStore.showFilePickerModal"
         ><v-icon>mdi-file-arrow-up-down</v-icon></v-btn

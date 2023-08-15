@@ -1,6 +1,7 @@
 const TaskStatus =  {
     PENDING : 'PENDING',
     ACTIVE : 'RUNNING',
+    INACTIVE: 'INACTIVE',
     REJECTED : 'REJECTED',
     COMPLETED : 'COMPLETED',
     CANCELLED : 'CANCELLED',

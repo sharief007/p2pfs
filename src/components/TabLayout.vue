@@ -15,6 +15,7 @@
               <Task
                 v-if="getIndex(i, j, colCount) < activeTaskList.length"
                 :value="activeTaskList[getIndex(i, j, colCount)]"
+                :controls="true"
               />
             </v-col>
           </v-row>
@@ -27,6 +28,7 @@
               <Task
                 v-if="getIndex(i, j, colCount) < completedTaskList.length"
                 :value="completedTaskList[getIndex(i, j, colCount)]"
+                :controls="false"
               />
             </v-col>
           </v-row>
@@ -118,8 +120,7 @@ const colCount = computed(() => {
 
 const getRowCount = (list, colCount) => {
   if (list.length) {
-    let value = Math.round(list.length / colCount)
-    return value > 0 ? value : 1
+    return Math.ceil( list.length / colCount )
   }
   return 0
 }

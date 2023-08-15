@@ -4,7 +4,7 @@
       height="65"
       color="grey-lighten-3"
       :model-value="props.value.progress"
-      :striped="true"
+      :striped="props.controls"
     >
       <v-card-item style="width: 100%">
         <v-card-title>{{ props.value.fileName }}</v-card-title>
@@ -18,12 +18,12 @@
     <v-list-item density="compact" width="100%">
       <template v-slot:prepend>
         <span>
-          {{ `${props.value.progress}% completed` }}
+          {{ taskStatus }}
         </span>
       </template>
-      <template v-slot:append>
-        <v-btn variant="text" :flat="true" size="small" @click="print" prepend-icon="mdi-play"
-          >play</v-btn
+      <template v-slot:append v-if="props.controls">
+        <v-btn variant="text" :flat="true" size="small" @click="toggleExecution" prepend-icon="mdi-play" :disabled="props.value.status === TaskStatus.PENDING"
+          >{{ toggleButtonText }}</v-btn
         >
         <v-btn variant="text" :flat="true" size="small" prepend-icon="mdi-trash-can">delete</v-btn>
       </template>
@@ -32,8 +32,41 @@
 </template>
 
 <script setup>
-const props = defineProps(['value'])
-const print = () => {
-  console.log(props.value)
+import { computed } from 'vue';
+import { TaskStatus } from '../models/models';
+import UseTaskStore from '../store/taskStore';
+
+const props = defineProps(['value', 'controls'])
+
+const taskStatus = computed(() => {
+  switch (props.value.status) {
+    case TaskStatus.PENDING:
+      return `⌛ Pending`
+    case TaskStatus.CANCELLED:
+      return  `❎ Cancelled`
+    case TaskStatus.COMPLETED:
+      return `✅ Completed`
+    case TaskStatus.FAILED:
+      return `❌ Failed`
+    case TaskStatus.REJECTED:
+      return `❌ Rejected`
+    default:
+      return `${props.value.progress}% Completed`
+  }
+})
+
+const toggleExecution = () => {
+  const taskStore = UseTaskStore()
+  const fileSenderId = props.value.fileSenderId
+  taskStore.toggleTaskExecution(fileSenderId)
 }
+
+const toggleButtonText = computed(()=> {
+  if (props.value.status === TaskStatus.ACTIVE) {
+    return "pause"
+  } else {
+    return "resume"
+  }
+})
+
 </script>
