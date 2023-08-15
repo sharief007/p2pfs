@@ -6,7 +6,7 @@
       >
     </template>
     <v-card :hover="true" class="d-flex flex-column h-100">
-      <v-window v-model:model-value="steps">
+      <v-window v-model:model-value="steps" :touch="false">
         <v-window-item value="step-1">
           <v-table height="600" density="compact" fixed-header class="flex-grow-1">
             <thead>
@@ -64,9 +64,9 @@
         <v-btn variant="text" prepend-icon="mdi-upload" @click="pickFiles" v-if="steps === 'step-1'">choose files</v-btn>
         <v-spacer></v-spacer>
         <v-btn variant="text" @click="closeFilePicker" v-if="steps === 'step-1'">close</v-btn>
-        <v-btn variant="text" @click="steps = 'step-2'" v-if="steps === 'step-1'" :disabled="!selectedFiles">next</v-btn>
+        <v-btn variant="text" @click="steps = 'step-2'" v-if="steps === 'step-1'" :disabled="nextDisabled">next</v-btn>
         <v-btn variant="text" @click="steps = 'step-1'" v-if="steps === 'step-2'">previous</v-btn>
-        <v-btn variant="text" @click="submitTask" v-if="steps === 'step-2'" :disabled="!selectedChannel">submit</v-btn>
+        <v-btn variant="text" @click="submitTask" v-if="steps === 'step-2'" :disabled="submitDisabled">submit</v-btn>
       </v-card-actions>
     </v-card>
   </v-dialog>
@@ -136,6 +136,14 @@ const closeFilePicker = () => {
   selectedChannel.value = []
   controlsStore.hideFilePickerModal()
 }
+
+const nextDisabled = computed(()=> {
+  return !selectedFiles.value.some(fileObj => fileObj.isSelected)
+})
+
+const submitDisabled = computed(()=>{
+  return !selectedChannel.value
+})
 </script>
 
 <style scoped></style>
