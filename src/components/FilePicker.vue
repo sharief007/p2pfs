@@ -1,5 +1,6 @@
 <template>
-  <v-dialog width="auto" min-width="600" :persistent="true" v-model:model-value="controlsStore.filePickerModal">
+  <v-dialog :width="dialogWidth" :fullscreen="fullscreen" :persistent="true" :min-width="dialogMinWidth"
+    v-model:model-value="controlsStore.filePickerModal">
     <template v-slot:activator>
       <v-btn icon @click="controlsStore.showFilePickerModal"
         ><v-icon>mdi-file-arrow-up-down</v-icon></v-btn
@@ -8,7 +9,7 @@
     <v-card :hover="true" class="d-flex flex-column h-100">
       <v-window v-model:model-value="steps" :touch="false">
         <v-window-item value="step-1">
-          <v-table height="600" density="compact" fixed-header class="flex-grow-1">
+          <v-table :height="itemHeight" density="compact" fixed-header class="flex-grow-1">
             <thead>
               <tr>
                 <th class="text-left">Selected</th>
@@ -40,7 +41,7 @@
         <v-window-item value="step-2">
           <v-list
             density="compact"
-            height="600"
+            :height="itemHeight"
             :mandatory="true"
             v-model:selected="selectedChannel"
           >
@@ -74,6 +75,7 @@
 
 <script setup>
 import { ref, computed } from 'vue'
+import { useDisplay } from 'vuetify'
 import { v4 } from 'uuid'
 
 import UseControlsStore from '../store/controlsStore'
@@ -85,6 +87,7 @@ const controlsStore = UseControlsStore()
 const imageStore = UseImageStore()
 const webrtcStore = UseWebRTCStore()
 const taskStore = UseTaskStore()
+const { name } = useDisplay()
 
 const selectedChannel = ref([])
 const selectedFiles = ref([])
@@ -143,6 +146,22 @@ const nextDisabled = computed(()=> {
 
 const submitDisabled = computed(()=>{
   return !selectedChannel.value
+})
+
+const fullscreen = computed(() => {
+  return name.value === 'xs'
+})
+
+const dialogWidth = computed(() => {
+  return fullscreen ? '' : 'auto'
+})
+
+const dialogMinWidth = computed(() => {
+  return fullscreen ? '' : '600'
+})
+
+const itemHeight = computed(() => {
+  return fullscreen ? '100vh' : '600'
 })
 </script>
 
