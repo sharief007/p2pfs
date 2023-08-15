@@ -9,8 +9,9 @@
     <template v-slot:activator>
       <v-btn icon @click="controlsStore.showSDPReader"><v-icon>mdi-data-matrix-scan</v-icon></v-btn>
     </template>
-    <v-card title="Accept offer/answer">
-      <v-window v-model:model-value="steps" class="h-100">
+    <!-- <v-card title="Accept offer/answer"> -->
+    <v-card>
+      <v-window v-model:model-value="steps" class="h-100" :touch="false">
         <v-window-item value="step-1" class="h-100">
           <v-list v-model:selected="sdpType" density="compact" :mandatory="true">
             <v-list-subheader title="Select SDP type"></v-list-subheader>
