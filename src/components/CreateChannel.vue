@@ -1,15 +1,15 @@
 <template>
-  <v-dialog v-model="controlsStore.createChannel" width="400" persistent="true">
+  <v-dialog v-model="controlsStore.createChannel" :fullscreen="fullscreen" :width="dialogWidth" persistent="true">
     <template v-slot:activator>
       <v-btn icon @click="controlsStore.showCreateChannel" color="bg-primary">
         <v-icon>mdi-plus</v-icon>
       </v-btn>
     </template>
     <v-card title="Create Channel">
-      <v-container fluid="true">
+      <v-container fluid="true" class="h-100">
         <v-row dense="true">
           <v-col cols="12" class="d-flex flex-column">
-            <div class="d-flex justify-center">
+            <div class="d-flex justify-center my-3">
               <v-avatar size="200" class="my-1">
                 <v-img :src="multiAvatar" v-if="multiAvatar.length > 26" />
                 <v-icon icon="mdi-account" size="200" v-else></v-icon>
@@ -17,7 +17,7 @@
             </div>
             <v-text-field
               label="Channel name"
-              variant="solo"
+              variant="solo-filled"
               :rules="channelNameRules"
               :readonly="channelNameReadOnly"
               :flat="true"
@@ -40,6 +40,7 @@
 
 <script setup>
 import { computed, ref } from 'vue'
+import { useDisplay } from 'vuetify'
 
 import UseControlsStore from '../store/controlsStore'
 import UseImageStore from '../store/imageStore'
@@ -48,6 +49,7 @@ import UseWebRTCStore from '../store/webrtcStore'
 const controlsStore = UseControlsStore()
 const imageStore = UseImageStore()
 const webrtcStore = UseWebRTCStore()
+const { name } = useDisplay()
 
 const rtcConnection = ref(null)
 const channelName = ref('')
@@ -100,6 +102,15 @@ const closeDialog = () => {
   controlsStore.hideCreateChannel()
   resetDialogState()
 }
+
+const fullscreen = computed(() => {
+  return name.value === 'xs'
+})
+
+const dialogWidth = computed(() => {
+  return fullscreen.value ? '' : '400'
+})
+
 </script>
 
 <style scoped></style>

@@ -153,15 +153,15 @@ const fullscreen = computed(() => {
 })
 
 const dialogWidth = computed(() => {
-  return fullscreen ? '' : 'auto'
+  return fullscreen.value ? '' : 'auto'
 })
 
 const dialogMinWidth = computed(() => {
-  return fullscreen ? '' : '600'
+  return fullscreen.value ? '' : '600'
 })
 
 const itemHeight = computed(() => {
-  return fullscreen ? '100vh' : '600'
+  return fullscreen.value ? '100vh' : '600'
 })
 </script>
 
