@@ -71,7 +71,7 @@ const tab = ref('progress')
 const activeTaskList = computed(() => {
   let activeTasks = []
   for (const task of taskStore.taskList) {
-    if (task.status == TaskStatus.ACTIVE || task.status == TaskStatus.PENDING) {
+    if (task.status == TaskStatus.ACTIVE || task.status == TaskStatus.PENDING || task.status == TaskStatus.INACTIVE) {
       activeTasks.push(task)
     }
   }

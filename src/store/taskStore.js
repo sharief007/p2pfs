@@ -29,7 +29,8 @@ const UseTaskStore = defineStore('task', {
           fileSize: item.fileSize,
           status: TaskStatus.PENDING, //'pending',
           progress: 0,
-          offset: 0
+          offset: 0,
+          channelName
         })
 
         try {
@@ -61,7 +62,8 @@ const UseTaskStore = defineStore('task', {
         rawSize: metadata.rawSize,
         status: TaskStatus.ACTIVE, //'running',
         progress: 0,
-        offset: 0
+        offset: 0,
+        channelName: metadata.channelName
       }
 
       this.taskList.push(currentTask)
@@ -181,7 +183,7 @@ const UseTaskStore = defineStore('task', {
     toggleTaskExecution(fileSenderId) {
       const webrtcStore = UseWebRTCStore()
       const index = this.taskList.findIndex((task)=> task.fileSenderId === fileSenderId)
-      if (index > 0) {
+      if (index >= 0) {
         let selectedTask = this.taskList[index]
         if (selectedTask.status === TaskStatus.ACTIVE) {
           selectedTask.status = TaskStatus.INACTIVE
