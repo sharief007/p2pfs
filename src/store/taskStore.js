@@ -82,6 +82,21 @@ const UseTaskStore = defineStore('task', {
         console.log('sending accept response failed', e)
       }
     },
+    rejectTask(metadata) {
+      const webrtcStore = UseWebRTCStore()
+      const dataChannel = webrtcStore.getDataChannel(metadata.channelName)
+
+      try {
+        dataChannel.send(
+          JSON.stringify({
+            type: MessageType.FILE_RESPONSE, //'FILE_RESPONSE',
+            fileSenderId: metadata.senderId
+          })
+        )
+      } catch (e) {
+        console.log('sending accept response failed', e)
+      }
+    },
     processResponse(channelName, message) {
       const webrtcStore = UseWebRTCStore()
       const dataChannel = webrtcStore.getDataChannel(channelName)

@@ -31,7 +31,7 @@
                     icon
                     :flat="true"
                     size="small"
-                    @click="controlsStore.popNotification(index)"
+                    @click="rejectNotification(index)"
                     ><v-icon>mdi-cancel</v-icon></v-btn
                   >
                 </v-list-item-action>
@@ -61,5 +61,12 @@ const acceptNotification = (index) => {
   console.log(metadata)
   metadata.receiverId = v4()
   taskStore.acceptTask(metadata)
+}
+
+const rejectNotification = (index) => {
+  let metadata = controlsStore.notifications[index]
+  controlsStore.popNotification(index)
+  console.log(metadata)
+  taskStore.receiverTask(metadata)
 }
 </script>
