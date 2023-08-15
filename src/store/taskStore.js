@@ -55,7 +55,7 @@ const UseTaskStore = defineStore('task', {
 
       const currentTask = {
         fileReceiverId: metadata.receiverId,
-        fileSenderId: metadata.senderId,
+        // fileSenderId: metadata.senderId,
         fileName: metadata.fileName,
         fileType: metadata.fileType,
         fileSize: metadata.fileSize,

@@ -23,9 +23,9 @@
       </template>
       <template v-slot:append v-if="props.controls">
         <v-btn variant="text" :flat="true" size="small" @click="toggleExecution" prepend-icon="mdi-play" :disabled="props.value.status === TaskStatus.PENDING"
-          >{{ toggleButtonText }}</v-btn
+          v-if="props.value.fileSenderId">{{ toggleButtonText }}</v-btn
         >
-        <v-btn variant="text" :flat="true" size="small" prepend-icon="mdi-trash-can">delete</v-btn>
+        <v-btn variant="text" :flat="true" size="small" prepend-icon="mdi-trash-can" >camcel</v-btn>
       </template>
     </v-list-item>
   </v-card>

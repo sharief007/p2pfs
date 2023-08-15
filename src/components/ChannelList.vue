@@ -42,11 +42,11 @@
             </v-badge>
           </v-list-item-action>
         </template>
-        <template v-slot:append>
+        <!-- <template v-slot:append>
           <v-list-item-action :end="true">
             <v-icon icon="mdi-trash-can" @click="discardConnection"></v-icon>
           </v-list-item-action>
-        </template>
+        </template> -->
       </v-list-item>
     </v-list>
   </div>
@@ -96,7 +96,7 @@ const getColorFromState = (connectionState) => {
   }
 }
 
-const discardConnection = (event) => {
-  console.log(event)
-}
+// const discardConnection = (event) => {
+//   console.log(event)
+// }
 </script>
