@@ -145,7 +145,7 @@ const nextDisabled = computed(()=> {
 })
 
 const submitDisabled = computed(()=>{
-  return !selectedChannel.value
+  return !selectedChannel.value.length > 0
 })
 
 const fullscreen = computed(() => {

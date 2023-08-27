@@ -67,6 +67,6 @@ const rejectNotification = (index) => {
   let metadata = controlsStore.notifications[index]
   controlsStore.popNotification(index)
   console.log(metadata)
-  taskStore.receiverTask(metadata)
+  taskStore.rejectTask(metadata)
 }
 </script>

@@ -25,7 +25,7 @@
         <v-btn variant="text" :flat="true" size="small" @click="toggleExecution" prepend-icon="mdi-play" :disabled="props.value.status === TaskStatus.PENDING"
           v-if="props.value.fileSenderId">{{ toggleButtonText }}</v-btn
         >
-        <v-btn variant="text" :flat="true" size="small" prepend-icon="mdi-trash-can" >camcel</v-btn>
+        <v-btn variant="text" :flat="true" size="small" prepend-icon="mdi-trash-can" :disabled="props.value.status === TaskStatus.PENDING">cancel</v-btn>
       </template>
     </v-list-item>
   </v-card>
